@@ -42,6 +42,10 @@
 	UIAlertController *authAlertController;
 	NSTimer *_appActiveTimer;
 	NSInteger _lastActiveTickTime;
+
+	// This will gget set to TRUE if the previous connection attempt resulted
+	// in an error. It will then be used to modify the "connection state".
+	BOOL _connectionError;
 }
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -49,8 +53,9 @@
 	[JAHPAuthenticatingHTTPProtocol setDelegate:self];
 	[JAHPAuthenticatingHTTPProtocol start];
 
-
 	[self initializeDefaults];
+
+	_connectionError = FALSE;
 
 	self.hstsCache = [HSTSCache retrieve];
 	[CookieJar syncCookieAcceptPolicy];
@@ -192,14 +197,25 @@
 }
 
 - (ConnectionState)getConnectionState {
-	return (ConnectionState)[self.psiphonTunnel getConnectionState];
+	// Normally, if we're in a disconnected state we will be connecting soon.
+	// But if an error occurred on the last connection attempt then we're
+	// in an error state.
+	ConnectionState connState = (ConnectionState)[self.psiphonTunnel getConnectionState];
+	if (connState == ConnectionStateDisconnected && _connectionError) {
+		connState = ConnectionStateError;
+	}
+
+	return connState;
 }
 
 -(void)startPsiphonOnlyIfNeeded:(BOOL)ifNeeded {
+	_connectionError = FALSE;
+
 	dispatch_async(dispatch_get_main_queue(), ^{
 		// Start the Psiphon tunnel
 		if (![self.psiphonTunnel start:ifNeeded]) {
 			NSLog(@"Psiphon Tunnel start:%@ failed", ifNeeded ? @"YES" : @"NO");
+			_connectionError = TRUE;
 			// TODO: what to show?
 		}
 
@@ -420,6 +436,20 @@
 	});
 }
 
+- (void)onListeningSocksProxyPort:(NSInteger)port {
+	// If both proxy type ports are available, reset the webview proxy.
+	if ([self.psiphonTunnel getLocalHttpProxyPort] != 0) {
+		[JAHPAuthenticatingHTTPProtocol resetSharedDemux];
+	}
+}
+
+- (void)onListeningHttpProxyPort:(NSInteger)port {
+	// If both proxy type ports are available, reset the webview proxy.
+	if ([self.psiphonTunnel getLocalSocksProxyPort] != 0) {
+		[JAHPAuthenticatingHTTPProtocol resetSharedDemux];
+	}
+}
+
 - (void)onConnectionStateChangedFrom:(PsiphonConnectionState)oldState to:(PsiphonConnectionState)newState {
 	dispatch_async(dispatch_get_main_queue(), ^{
 		if (newState == PsiphonConnectionStateConnecting) {
@@ -429,8 +459,6 @@
 			}
 		}
 		else if (newState == PsiphonConnectionStateConnected) {
-			[JAHPAuthenticatingHTTPProtocol resetSharedDemux];
-
 			NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
 			if ([userDefaults boolForKey:@"vibrate_notification"]) {
@@ -564,7 +592,7 @@
 		[[NSNotificationCenter defaultCenter]
 		 postNotificationName:kPsiphonConnectionStateNotification
 		 object:self
-		 userInfo:@{kPsiphonConnectionState: @([self.psiphonTunnel getConnectionState])}];
+		 userInfo:@{kPsiphonConnectionState: @([self getConnectionState])}];
 	});
 }
 

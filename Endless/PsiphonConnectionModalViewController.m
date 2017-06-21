@@ -78,7 +78,11 @@
 	NSString *message = @"";
 	UIView *contentView = nil;
 
-	if (state == ConnectionStateConnecting) {
+	if (state == ConnectionStateDisconnected || state == ConnectionStateDisconnected) {
+		// If we're in ConnectionStateDisconnected, then we're about to start
+		// connecting, and we'll treat it the same as ConnectionStateDisconnected.
+		// (There's a separate error state.)	
+
 		contentView = [[UIView alloc] initWithFrame:CGRectZero];
 
 		ICDMaterialActivityIndicatorView* activityIndicator = [[ICDMaterialActivityIndicatorView alloc] initWithActivityIndicatorStyle:ICDMaterialActivityIndicatorViewStyleLarge];
@@ -312,7 +316,7 @@
 		title = NSLocalizedString(@"Connected!",
 								  @"Connection status initial splash modal dialog title for 'Connected' state");
 		message = nil;
-	} else if(state == ConnectionStateDisconnected) {
+	} else if(state == ConnectionStateError) {
 		title = NSLocalizedString(@"Disconnected!",
 								  @"Connection status initial splash modal dialog title for 'Psiphon can not start due to an internal error' state");
 		message = NSLocalizedString(@"Psiphon can not start due to an internal error, please send feedback.",
