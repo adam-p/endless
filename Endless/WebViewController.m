@@ -410,7 +410,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 		__weak  WebViewController *weakSelf = self;
 
 		PsiphonConnectionSplashViewController *connectionSplashViewController = [[PsiphonConnectionSplashViewController alloc]
-																				 initWithState:[[AppDelegate sharedAppDelegate] psiphonConectionState]];
+																				 initWithState:[[AppDelegate sharedAppDelegate] getConnectionState]];
 		connectionSplashViewController.delegate = self;
 		[connectionSplashViewController addAction:[NYAlertAction actionWithTitle:NSLocalizedString(@"Go to Settings", nil)
 																		   style:UIAlertActionStyleDefault
@@ -419,7 +419,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 																		 }]];
 
 		[self presentViewController:connectionSplashViewController animated:NO
-						 completion:^(){[[AppDelegate sharedAppDelegate] notifyPsiphonConnectionState];}];
+						 completion:^(){[[AppDelegate sharedAppDelegate] notifyConnectionState];}];
 	}
 
 	[self adjustLayout];
@@ -1458,9 +1458,9 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 
 - (void) psiphonConnectionStateNotified:(NSNotification *)notification
 {
-	PsiphonConnectionState state = [[notification.userInfo objectForKey:kPsiphonConnectionState] unsignedIntegerValue];
+	ConnectionState state = [[notification.userInfo objectForKey:kPsiphonConnectionState] unsignedIntegerValue];
 	[psiphonConnectionIndicator displayConnectionState:state];
-	if(state != PsiphonConnectionStateConnected) {
+	if(state != ConnectionStateConnected) {
 		[self stopLoading];
 	} else {
 		for (WebViewTab *wvt in webViewTabs) {
@@ -1584,12 +1584,12 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 
 	// Since we have modified the psiphonConnectionIndicator's state manually for the tutorial
 	// we need to ensure it gets reset to display the correct state
-	[[AppDelegate sharedAppDelegate] notifyPsiphonConnectionState];
+	[[AppDelegate sharedAppDelegate] notifyConnectionState];
 
 	if (self.resumePsiphonStart) {
 		// Resume setup
 		// Start psiphon and open homepage
-		[[AppDelegate sharedAppDelegate] startIfNeeded];
+		[[AppDelegate sharedAppDelegate] startPsiphonOnlyIfNeeded:YES];
 		[self viewIsVisible];
 	} else {
 		[self dismissViewControllerAnimated:NO completion:nil];
@@ -1652,7 +1652,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	[center addObserver:self selector:@selector(tutorialReappeared) name:UIApplicationDidBecomeActiveNotification object:nil];
 
 	// Force connectionIndicator to show connected state
-	[psiphonConnectionIndicator displayConnectionState:PsiphonConnectionStateConnected];
+	[psiphonConnectionIndicator displayConnectionState:ConnectionStateConnected];
 
 	// Init
 	tutorial = [[Tutorial alloc] init];
@@ -1885,7 +1885,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 
 - (void) showPsiphonConnectionStatusAlert {
 	PsiphonConnectionAlertViewController *connectionAlertViewController = [[PsiphonConnectionAlertViewController alloc]
-																		   initWithState:[[AppDelegate sharedAppDelegate] psiphonConectionState]];
+																		   initWithState:[[AppDelegate sharedAppDelegate] getConnectionState]];
 	connectionAlertViewController.delegate = self;
 
 	__weak  WebViewController *weakSelf = self;
@@ -1904,7 +1904,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 																	}]];
 
 	[self  presentViewController:connectionAlertViewController animated:NO
-					  completion:^(){[[AppDelegate sharedAppDelegate] notifyPsiphonConnectionState];}];
+					  completion:^(){[[AppDelegate sharedAppDelegate] notifyConnectionState];}];
 }
 
 - (void)handleDrag:(UIPanGestureRecognizer *)gesture {

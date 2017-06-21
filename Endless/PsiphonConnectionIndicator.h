@@ -21,5 +21,5 @@
 
 @interface PsiphonConnectionIndicator : UIControl
 - (id) initWithFrame:(CGRect)frame;
-- (void) displayConnectionState:(PsiphonConnectionState) state;
+- (void) displayConnectionState:(ConnectionState) state;
 @end

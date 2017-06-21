@@ -23,11 +23,11 @@
 #import "ICDMaterialActivityIndicatorView.h"
 
 @implementation PsiphonConnectionModalViewController {
-	PsiphonConnectionState _connectionState;
+	ConnectionState _connectionState;
 	NSString *_connectionRegion;
 }
 
-- (id) initWithState:(PsiphonConnectionState)state {
+- (id) initWithState:(ConnectionState)state {
 	self = [super initWithNibName:nil bundle:nil];
 	if(self) {
 		self.dismissOnConnected = NO;
@@ -51,7 +51,7 @@
 
 - (void) psiphonConnectionStateNotified:(NSNotification *)notification
 {
-	PsiphonConnectionState state = [[notification.userInfo objectForKey:kPsiphonConnectionState] unsignedIntegerValue];
+	ConnectionState state = [[notification.userInfo objectForKey:kPsiphonConnectionState] unsignedIntegerValue];
 
 	Region *selectedRegion = [[RegionAdapter sharedInstance] getSelectedRegion];
 	NSString *region = [[RegionAdapter sharedInstance] getLocalizedRegionTitle:selectedRegion.code];
@@ -66,19 +66,19 @@
 
 	[self updateViews];
 
-	if(state == PsiphonConnectionStateConnected && self.dismissOnConnected == YES) {
+	if(state == ConnectionStateConnected && self.dismissOnConnected == YES) {
 		[self dismissViewControllerAnimated:YES completion:nil];
 		return;
 	}
 }
 
--(void) setupViewsForState:(PsiphonConnectionState)state {
+-(void) setupViewsForState:(ConnectionState)state {
 
 	NSString *title = @"";
 	NSString *message = @"";
 	UIView *contentView = nil;
 
-	if (state == PsiphonConnectionStateConnecting) {
+	if (state == ConnectionStateConnecting) {
 		contentView = [[UIView alloc] initWithFrame:CGRectZero];
 
 		ICDMaterialActivityIndicatorView* activityIndicator = [[ICDMaterialActivityIndicatorView alloc] initWithActivityIndicatorStyle:ICDMaterialActivityIndicatorViewStyleLarge];
@@ -188,7 +188,7 @@
 		title = NSLocalizedString(@"Connecting...",
 								  @"Connection status initial splash modal dialog title for 'Connecting...' state");
 		message = nil;
-	} else if (state == PsiphonConnectionStateWaitingForNetwork) {
+	} else if (state == ConnectionStateWaitingForNetwork) {
 		contentView = [[UIView alloc] initWithFrame:CGRectZero];
 
 		ICDMaterialActivityIndicatorView* activityIndicator = [[ICDMaterialActivityIndicatorView alloc] initWithActivityIndicatorStyle:ICDMaterialActivityIndicatorViewStyleLarge];
@@ -222,7 +222,7 @@
 		title = NSLocalizedString(@"Waiting for network...",
 								  @"Connection status initial splash modal dialog title for 'Waiting for network...' state");
 		message = nil;
-	} else if(state == PsiphonConnectionStateConnected){
+	} else if(state == ConnectionStateConnected){
 		contentView = [[UIView alloc] initWithFrame:CGRectZero];
 
 		UILabel *serverRegionTextLabel = [[UILabel alloc] init];
@@ -312,7 +312,7 @@
 		title = NSLocalizedString(@"Connected!",
 								  @"Connection status initial splash modal dialog title for 'Connected' state");
 		message = nil;
-	} else if(state == PsiphonConnectionStateDisconnected) {
+	} else if(state == ConnectionStateDisconnected) {
 		title = NSLocalizedString(@"Disconnected!",
 								  @"Connection status initial splash modal dialog title for 'Psiphon can not start due to an internal error' state");
 		message = NSLocalizedString(@"Psiphon can not start due to an internal error, please send feedback.",
@@ -358,7 +358,7 @@
 	BOOL dismissOnViewDidAppear;
 }
 
-- (id) initWithState:(PsiphonConnectionState)state {
+- (id) initWithState:(ConnectionState)state {
 	self = [super initWithState:state];
 	if(self) {
 		self.transitionStyle = NYAlertViewControllerTransitionStyleFade;
@@ -396,7 +396,7 @@
 
 }
 
-- (id) initWithState:(PsiphonConnectionState)state {
+- (id) initWithState:(ConnectionState)state {
 	self = [super initWithState:state];
 	if(self) {
 		self.transitionStyle = NYAlertViewControllerTransitionStyleFade;

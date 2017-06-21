@@ -57,17 +57,18 @@
 
 
 @property(strong, nonatomic) PsiphonTunnel* psiphonTunnel;
-@property NSInteger socksProxyPort;
-@property NSInteger httpProxyPort;
-@property PsiphonConnectionState psiphonConectionState;
 @property NSCache *sslCertCache;
 
-- (void) startIfNeeded;
+- (ConnectionState) getConnectionState;
+- (void) startPsiphonOnlyIfNeeded:(BOOL)ifNeeded;
 - (void) reloadAndOpenSettings;
 - (void) reloadOnboardingForl10n;
 - (NSString *) getPsiphonConfig;
 - (void) scheduleRunningTunnelServiceRestart;
-- (void) notifyPsiphonConnectionState;
+- (void) notifyConnectionState;
+
+- (int) getSocksProxyPort;
+- (int) getHttpProxyPort;
 
 @end
 

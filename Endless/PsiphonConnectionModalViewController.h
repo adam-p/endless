@@ -29,7 +29,7 @@
 // flag indicating if modal needs to be dismissed upon successful connection
 @property (nonatomic) BOOL dismissOnConnected;
 @property (nonatomic, weak) id <RegionSelectionControllerDelegate> delegate;
-- (id) initWithState:(PsiphonConnectionState)state;
+- (id) initWithState:(ConnectionState)state;
 @end
 
 

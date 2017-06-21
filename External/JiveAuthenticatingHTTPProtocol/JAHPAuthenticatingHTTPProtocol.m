@@ -282,8 +282,8 @@ static JAHPQNSURLSessionDemux *sharedDemuxInstance = nil;
 
 			// Set proxy
 			NSString* proxyHost = @"localhost";
-			NSNumber* socksProxyPort = [NSNumber numberWithInt: (int)[AppDelegate sharedAppDelegate].socksProxyPort];
-			NSNumber* httpProxyPort = [NSNumber numberWithInt: (int)[AppDelegate sharedAppDelegate].httpProxyPort];
+			NSNumber* socksProxyPort = [NSNumber numberWithInt: [[AppDelegate sharedAppDelegate] getSocksProxyPort]];
+			NSNumber* httpProxyPort = [NSNumber numberWithInt: [[AppDelegate sharedAppDelegate] getHttpProxyPort]];
 
 			NSDictionary *proxyDict = @{
 										@"SOCKSEnable" : [NSNumber numberWithInt:0],

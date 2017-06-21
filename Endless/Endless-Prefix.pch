@@ -36,12 +36,12 @@
 @import Foundation;
 
 /* Psiphon connection states */
-typedef NS_ENUM(NSInteger, PsiphonConnectionState)
+typedef NS_ENUM(NSInteger, ConnectionState)
 {
-	PsiphonConnectionStateDisconnected,
-	PsiphonConnectionStateConnecting,
-	PsiphonConnectionStateConnected,
-    PsiphonConnectionStateWaitingForNetwork
+	ConnectionStateDisconnected = 0,
+	ConnectionStateConnecting,
+	ConnectionStateConnected,
+	ConnectionStateWaitingForNetwork
 };
 
 #define kPsiphonConnectionStateNotification @"kPsiphonConnectionStateNotification"

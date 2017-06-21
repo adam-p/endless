@@ -49,15 +49,15 @@
 	_activityIndicator.center = CGPointMake(self.bounds.size.width / 2 - offset, self.bounds.size.height/2 - offset);
 
 
-	[self displayConnectionState:PsiphonConnectionStateDisconnected];
+	[self displayConnectionState:ConnectionStateDisconnected];
 	return self;
 }
 
-- (void) displayConnectionState:(PsiphonConnectionState)state {
+- (void) displayConnectionState:(ConnectionState)state {
 	CGFloat activityIndicatorAlpha, imgConnectedAlpha, imgDisconnectedAlpha = 0.0f;
 	void (^animationCompleted)(BOOL finished);
 	switch (state) {
-		case PsiphonConnectionStateConnected:
+		case ConnectionStateConnected:
 		{
 			activityIndicatorAlpha = 0.0f;
 			imgConnectedAlpha = 1.0f;
@@ -68,7 +68,7 @@
 			};
 			break;
 		}
-		case PsiphonConnectionStateConnecting:
+		case ConnectionStateConnecting:
 		{
 			activityIndicatorAlpha = 1.0f;
 			imgConnectedAlpha = 0.0f;
@@ -79,7 +79,7 @@
 			};
 			break;
 		}
-		case PsiphonConnectionStateWaitingForNetwork:
+		case ConnectionStateWaitingForNetwork:
 		{
 			activityIndicatorAlpha = 1.0f;
 			imgConnectedAlpha = 0.0f;
@@ -90,7 +90,7 @@
 			};
 			break;
 		}
-		case PsiphonConnectionStateDisconnected:
+		case ConnectionStateDisconnected:
 		{
 			activityIndicatorAlpha = 0.0f;
 			imgConnectedAlpha = 0.0f;

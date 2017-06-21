@@ -62,7 +62,7 @@ BOOL linksEnabled;
 		links = @[kAboutSpecifierKey, kFAQSpecifierKey, kPrivacyPolicySpecifierKey, kTermsOfUseSpecifierKey];
 	});
 
-	linksEnabled = ([[AppDelegate sharedAppDelegate] psiphonConectionState] == PsiphonConnectionStateConnected);
+	linksEnabled = ([[AppDelegate sharedAppDelegate] getConnectionState] == ConnectionStateConnected);
 
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center addObserver:self selector:@selector(settingDidChange:) name:kIASKAppSettingChanged object:nil];
@@ -376,7 +376,7 @@ BOOL linksEnabled;
 	[self.webViewController settingsViewControllerDidEnd];
 	// upon completion force connection state notification in case connection modal is
 	// still blocking UI but needs to be dismissed
-	[self dismissViewControllerAnimated:NO completion:^(){[[AppDelegate sharedAppDelegate]notifyPsiphonConnectionState];}];
+	[self dismissViewControllerAnimated:NO completion:^(){[[AppDelegate sharedAppDelegate]notifyConnectionState];}];
 }
 
 - (void) updateAvailableRegions:(NSNotification*) notification {
@@ -384,8 +384,8 @@ BOOL linksEnabled;
 }
 
 - (void) updateLinksState:(NSNotification*) notification {
-	PsiphonConnectionState state = [[notification.userInfo objectForKey:kPsiphonConnectionState] unsignedIntegerValue];
-	if(state == PsiphonConnectionStateConnected) {
+	ConnectionState state = [[notification.userInfo objectForKey:kPsiphonConnectionState] unsignedIntegerValue];
+	if(state == ConnectionStateConnected) {
 		linksEnabled = true;
 	} else {
 		linksEnabled = false;

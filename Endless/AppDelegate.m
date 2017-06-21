@@ -21,11 +21,7 @@
  * See LICENSE file for redistribution terms.
  */
 
-#import <arpa/inet.h>
-#import <netinet/in.h>
-#import <sys/socket.h>
 #import <AudioToolbox/AudioServices.h>
-#import <CoreFoundation/CFSocket.h>
 
 #import "AppDelegate.h"
 #import "Bookmark.h"
@@ -63,15 +59,9 @@
 	NSURL *audioPath = [[NSBundle mainBundle] URLForResource:@"blip1" withExtension:@"wav"];
 	AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &_notificationSound);
 
-	self.socksProxyPort = 0;
-	self.httpProxyPort = 0;
-	
 	self.psiphonTunnel = [PsiphonTunnel newPsiphonTunnel:self];
 
 	_needsResume = false;
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(internetReachabilityChanged:) name:kReachabilityChangedNotification object:nil];
-	_reachability = [Reachability reachabilityForInternetConnection];
-	[_reachability startNotifier];
 
 	BOOL isOnboarding = ![[NSUserDefaults standardUserDefaults] boolForKey:kHasBeenOnboardedKey];
 	self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
@@ -150,36 +140,12 @@
 	return YES;
 }
 
-- (void) startPsiphon {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		// Read in the embedded server entries
-		NSFileManager *fileManager = [NSFileManager defaultManager];
-		NSString *bundledEmbeddedServerEntriesPath = [[[ NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"embedded_server_entries"];
-		NSString *embeddedServerEntries = [[NSString alloc] initWithData:[fileManager contentsAtPath:bundledEmbeddedServerEntriesPath] encoding:NSASCIIStringEncoding];
-		if(!embeddedServerEntries) {
-			NSLog(@"Embedded server entries file not found. Aborting now.");
-			abort();
-		}
-
-		if(_handshakeHomePages && [_handshakeHomePages count] > 0) {
-			[_handshakeHomePages removeAllObjects];
-		}
-		_shouldOpenHomePages = true;
-
-		// Start the Psiphon tunnel
-		if( ! [self.psiphonTunnel start:embeddedServerEntries] ) {
-			self.psiphonConectionState = PsiphonConnectionStateDisconnected;
-			[self notifyPsiphonConnectionState];
-		}
-	});
+- (int) getSocksProxyPort {
+	return (int)[self.psiphonTunnel getLocalSocksProxyPort];
 }
 
-- (void) stopAndWaitForInternetConnection {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		self.psiphonConectionState = PsiphonConnectionStateWaitingForNetwork;
-		[self notifyPsiphonConnectionState];
-		[self.psiphonTunnel stop];
-	});
+- (int) getHttpProxyPort {
+	return (int)[self.psiphonTunnel getLocalHttpProxyPort];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -206,55 +172,30 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:kHasBeenOnboardedKey]) {
-		[self startIfNeeded];
+		[self startPsiphonOnlyIfNeeded:YES];
 	}
 }
 
--(void)startIfNeeded {
-	BOOL needStart = false;
+- (ConnectionState)getConnectionState {
+	return (ConnectionState)[self.psiphonTunnel getConnectionState];
+}
 
-	// Auto start if not connected
-	if (self.psiphonConectionState != PsiphonConnectionStateConnected) {
-		needStart = true;
-	} else if (self.socksProxyPort > 0) {
-		// check if SOCKS local proxy is still accessible
-
-		CFSocketRef sockfd;
-		sockfd = CFSocketCreate(NULL, AF_INET, SOCK_STREAM, IPPROTO_TCP,0, NULL,NULL);
-		struct sockaddr_in servaddr;
-		memset(&servaddr, 0, sizeof(servaddr));
-		servaddr.sin_len = sizeof(servaddr);
-		servaddr.sin_family = AF_INET;
-		servaddr.sin_port = htons([self socksProxyPort]);
-		inet_pton(AF_INET, [@"127.0.0.1" cStringUsingEncoding:NSUTF8StringEncoding], &servaddr.sin_addr);
-		CFDataRef connectAddr = CFDataCreate(NULL, (unsigned char *)&servaddr, sizeof(servaddr));
-		if (CFSocketConnectToAddress(sockfd, connectAddr, 1) != kCFSocketSuccess) {
-			needStart = true;
+-(void)startPsiphonOnlyIfNeeded:(BOOL)ifNeeded {
+	dispatch_async(dispatch_get_main_queue(), ^{
+		// Start the Psiphon tunnel
+		if (![self.psiphonTunnel start:ifNeeded]) {
+			NSLog(@"Psiphon Tunnel start:%@ failed", ifNeeded ? @"YES" : @"NO");
+			// TODO: what to show?
 		}
-		CFSocketInvalidate(sockfd);
-		CFRelease(sockfd);
-		CFRelease(connectAddr);
 
-	} else {
-		needStart = true;
-	}
-
-	if(needStart) {
-		if (_reachability.currentReachabilityStatus == NotReachable) {
-			self.psiphonConectionState = PsiphonConnectionStateWaitingForNetwork;
-		} else {
-			self.psiphonConectionState = PsiphonConnectionStateConnecting;
-		}
-		[self notifyPsiphonConnectionState];
-		[self startPsiphon];
-	}
+		// A state change notification will be received from the tunnel
+	});
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
 	/* this definitely ends our sessions */
 	[_psiphonTunnel stop];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
 	[application ignoreSnapshotOnNextApplicationLaunch];
 }
 
@@ -351,9 +292,7 @@
 }
 
 - (void)scheduleRunningTunnelServiceRestart {
-	self.psiphonConectionState = PsiphonConnectionStateConnecting;
-	[self notifyPsiphonConnectionState];
-	[self startPsiphon];
+	[self startPsiphonOnlyIfNeeded:YES];
 }
 
 + (AppDelegate *)sharedAppDelegate{
@@ -415,6 +354,19 @@
 	return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
+- (NSString *) getEmbeddedServerEntries {
+	// Read in the embedded server entries
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSString *bundledEmbeddedServerEntriesPath = [[[ NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"embedded_server_entries"];
+	NSString *embeddedServerEntries = [[NSString alloc] initWithData:[fileManager contentsAtPath:bundledEmbeddedServerEntriesPath] encoding:NSASCIIStringEncoding];
+	if (!embeddedServerEntries) {
+		NSLog(@"Embedded server entries file not found. Aborting now.");
+		abort();
+	}
+
+	return embeddedServerEntries;
+}
+
 - (void) onAvailableEgressRegions:(NSArray *)regions {
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[RegionAdapter sharedInstance] onAvailableEgressRegions:regions];
@@ -431,55 +383,44 @@
 	});
 }
 
-- (void) onListeningSocksProxyPort:(NSInteger)port {
+- (void)onConnectionStateChangedFrom:(PsiphonConnectionState)oldState to:(PsiphonConnectionState)newState {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[JAHPAuthenticatingHTTPProtocol resetSharedDemux];
-		self.socksProxyPort = port;
+		if (newState == PsiphonConnectionStateConnecting) {
+			// Clear out any previous home pages, as we'll get more from the new server
+			if(_handshakeHomePages && [_handshakeHomePages count] > 0) {
+				[_handshakeHomePages removeAllObjects];
+			}
+			_shouldOpenHomePages = true;
+		}
+		else if (newState == PsiphonConnectionStateConnected) {
+			[JAHPAuthenticatingHTTPProtocol resetSharedDemux];
+
+			NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+
+			if ([userDefaults boolForKey:@"vibrate_notification"]) {
+				AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+			}
+
+			if ([userDefaults boolForKey:@"sound_notification"]) {
+				AudioServicesPlaySystemSound (_notificationSound);
+			}
+
+			if(_shouldOpenHomePages && _handshakeHomePages && [_handshakeHomePages count] > 0) {
+				// pick single URL from the handshake
+				NSString *selectedHomePage = _handshakeHomePages[0];
+
+				[self.webViewController openPsiphonHomePage: selectedHomePage];
+				_shouldOpenHomePages = false;
+			}
+		}
 	});
+
+	[self notifyConnectionState];
 }
 
-
-- (void) onListeningHttpProxyPort:(NSInteger)port {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[JAHPAuthenticatingHTTPProtocol resetSharedDemux];
-		self.httpProxyPort = port;
-	});
-}
-
-- (void) onConnecting {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		if (_reachability.currentReachabilityStatus == NotReachable) {
-			self.psiphonConectionState = PsiphonConnectionStateWaitingForNetwork;
-		} else {
-			self.psiphonConectionState = PsiphonConnectionStateConnecting;
-		}
-		[self notifyPsiphonConnectionState];
-	});
-}
-
-- (void) onConnected {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		self.psiphonConectionState = PsiphonConnectionStateConnected;
-		[self notifyPsiphonConnectionState];
-
-		NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-
-		if ([userDefaults boolForKey:@"vibrate_notification"]) {
-			AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-		}
-
-		if ([userDefaults boolForKey:@"sound_notification"]) {
-			AudioServicesPlaySystemSound (_notificationSound);
-		}
-
-		if(_shouldOpenHomePages && _handshakeHomePages && [_handshakeHomePages count] > 0) {
-			// pick single URL from the handshake
-			NSString *selectedHomePage = _handshakeHomePages[0];
-
-			[self.webViewController openPsiphonHomePage: selectedHomePage];
-			_shouldOpenHomePages = false;
-		}
-	});
+- (void)onDeviceInternetConnectivityInterrupted {
+	// Force a tunnel reconnect
+	[self startPsiphonOnlyIfNeeded:NO];
 }
 
 - (void) onHomepage:(NSString *)url {
@@ -532,32 +473,17 @@
 		[prevWebViewController.view removeFromSuperview];
 	}];
 
-	[self notifyPsiphonConnectionState];
+	[self notifyConnectionState];
 	[self.webViewController setOpenSettingImmediatelyOnViewDidAppear:YES];
 }
 
-- (void) notifyPsiphonConnectionState {
+- (void) notifyConnectionState {
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[NSNotificationCenter defaultCenter]
 		 postNotificationName:kPsiphonConnectionStateNotification
 		 object:self
-		 userInfo:@{kPsiphonConnectionState: @(self.psiphonConectionState)}];
+		 userInfo:@{kPsiphonConnectionState: @([self.psiphonTunnel getConnectionState])}];
 	});
-}
-
-- (void) internetReachabilityChanged:(NSNotification *)note
-{
-	Reachability* currentReachability = [note object];
-	if([currentReachability currentReachabilityStatus] == NotReachable) {
-		if(self.psiphonConectionState != PsiphonConnectionStateDisconnected) {
-			_needsResume = true;
-			[self stopAndWaitForInternetConnection];
-		}
-	} else {
-		if(_needsResume){
-			[self startPsiphon];
-		}
-	}
 }
 
 // MARK: JAHPAuthenticatingHTTPProtocol delegate methods
