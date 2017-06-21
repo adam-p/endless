@@ -62,6 +62,7 @@
 	/* Setup UIPageViewController */
 	self.pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 	self.pageController.dataSource = self;
+	self.pageController.delegate = self;
 	self.pageController.view.frame = self.view.bounds;
 
 	/* Setup and present initial OnboardingChildViewController */
@@ -318,7 +319,22 @@
 														 multiplier:.04f
 														   constant:0]];
 
+	UITapGestureRecognizer *tutorialPress =
+	[[UITapGestureRecognizer alloc] initWithTarget:self
+											action:@selector(moveToNextPage)];
+	[self.view addGestureRecognizer:tutorialPress];
+
 	skipButton.hidden = YES; // Hide skip button until we have > 1 OnboardingInfoViewControllers
+}
+#pragma mark - Helper functions
+
+- (NSInteger)getCurrentPageIndex {
+	if ([_pageController.viewControllers count] == 0) {
+		return 0;
+	}
+
+	UIViewController <OnboardingChildViewController>*presentedViewController = [_pageController.viewControllers objectAtIndex:0];
+	return presentedViewController.index;
 }
 
 #pragma mark - UIPageViewControllerDataSource methods and helper functions
@@ -364,12 +380,12 @@
 
 - (NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController {
 	// The number of items in the UIPageControl
-	return kNumOnboardingViews;
+	return kNumOnboardingViews + 1; // extra dot which signifies tutorial screens
 }
 
 - (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController {
 	// The selected dot in the UIPageControl
-	return 0;
+	return [self getCurrentPageIndex];
 }
 
 #pragma mark - OnboardingChildViewController delegate methods
@@ -378,11 +394,19 @@
 	return moon.frame.origin.y + moon.frame.size.height;
 }
 
-- (void)onboardingEnded {
-	[[UIApplication sharedApplication] setStatusBarHidden:NO]; // Exit full screen
-	[self.pageController.view removeFromSuperview];
-	[self dismissViewControllerAnimated:NO completion:nil];
+- (void)moveToNextPage {
+	[self moveToViewAtIndex:[self getCurrentPageIndex]+1];
+}
 
+- (void)moveToViewAtIndex:(NSInteger)index {
+	if (index >= kNumOnboardingViews) {
+		[self onboardingEnded];
+	} else {
+		[self.pageController setViewControllers:@[[self viewControllerAtIndex:index]] direction:isRTL ? UIPageViewControllerNavigationDirectionReverse : UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+	}
+}
+
+- (void)onboardingEnded {
 	id<OnboardingViewControllerDelegate> strongDelegate = self.delegate;
 
 	if ([strongDelegate respondsToSelector:@selector(onboardingEnded)]) {

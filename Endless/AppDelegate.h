@@ -27,7 +27,6 @@
 #import <PsiphonTunnel/PsiphonTunnel.h>
 #import "CookieJar.h"
 #import "HSTSCache.h"
-#import "OnboardingViewController.h"
 #import "WebViewController.h"
 #import "JAHPAuthenticatingHTTPProtocol.h"
 
@@ -36,7 +35,11 @@
 #define kHasBeenOnboardedKey @"hasBeenOnBoarded"
 #define kBuildNumber @"buildNumber"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, TunneledAppDelegate, JAHPAuthenticatingHTTPProtocolDelegate, OnboardingViewControllerDelegate>
+#define APP_ACTIVE_TIMER_INTERVAL_SECONDS 60 * 5 // store elapsed time every 5 minutes
+#define APP_ACTIVE_TIME_BEFORE_NEXT_HOMEPAGE_SECONDS 60 * 30 // do not open more home pages if app has been active less than 30 minutes since last home page
+#define kAppActiveTimeSinceLastHomePage @"appActiveTimeSinceLastHomePage"
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate, TunneledAppDelegate, JAHPAuthenticatingHTTPProtocolDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

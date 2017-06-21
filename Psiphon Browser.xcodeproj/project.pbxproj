@@ -52,7 +52,6 @@
 		444CEFB31E54DA2D0085F3D4 /* NYAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 444CEFB01E54DA2D0085F3D4 /* NYAlertView.m */; };
 		444CEFB41E54DA2D0085F3D4 /* NYAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 444CEFB21E54DA2D0085F3D4 /* NYAlertViewController.m */; };
 		446CB0A11DFF613900AEC0A9 /* Root.strings in Resources */ = {isa = PBXBuildFile; fileRef = 446CB09F1DFF613900AEC0A9 /* Root.strings */; };
-		4484C8A81E32D8B400DF0CB6 /* PsiphonSettingsTextFieldViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4484C8A71E32D8B400DF0CB6 /* PsiphonSettingsTextFieldViewCell.m */; };
 		44864F8E1E708EE900865705 /* JAHPAuthenticatingHTTPProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 44864F871E708EE900865705 /* JAHPAuthenticatingHTTPProtocol.m */; };
 		44864F8F1E708EE900865705 /* JAHPCacheStoragePolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 44864F891E708EE900865705 /* JAHPCacheStoragePolicy.m */; };
 		44864F901E708EE900865705 /* JAHPCanonicalRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 44864F8B1E708EE900865705 /* JAHPCanonicalRequest.m */; };
@@ -71,7 +70,9 @@
 		44E779461DE6038000854379 /* psiphon_config in Resources */ = {isa = PBXBuildFile; fileRef = 44E779451DE6038000854379 /* psiphon_config */; };
 		44E779481DE6040100854379 /* PsiphonTunnel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44E779411DE6031A00854379 /* PsiphonTunnel.framework */; };
 		4E1175191DD63123009527EB /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1175181DD63123009527EB /* SettingsViewController.m */; };
-		4E6332CA1E54F7280093819C /* Tutorial.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E6332C91E54F7280093819C /* Tutorial.m */; };
+		4E628E991EF89D1A00F8B3B5 /* PsiphonSettingsTextFieldViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E628E981EF89D1A00F8B3B5 /* PsiphonSettingsTextFieldViewCell.m */; };
+		4E628E9E1EF89D2C00F8B3B5 /* TutorialPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E628E9B1EF89D2C00F8B3B5 /* TutorialPageViewController.m */; };
+		4E628E9F1EF89D2C00F8B3B5 /* TutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E628E9D1EF89D2C00F8B3B5 /* TutorialViewController.m */; };
 		4E6590C91EAE74DF00825A7A /* onboarding1.mov in Resources */ = {isa = PBXBuildFile; fileRef = 4E6590C61EAE74DF00825A7A /* onboarding1.mov */; };
 		4E6590CA1EAE74DF00825A7A /* onboarding2.mov in Resources */ = {isa = PBXBuildFile; fileRef = 4E6590C71EAE74DF00825A7A /* onboarding2.mov */; };
 		4E6590CB1EAE74DF00825A7A /* onboarding3.mov in Resources */ = {isa = PBXBuildFile; fileRef = 4E6590C81EAE74DF00825A7A /* onboarding3.mov */; };
@@ -188,8 +189,6 @@
 		444CEFB21E54DA2D0085F3D4 /* NYAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NYAlertViewController.m; path = NYAlertViewController/NYAlertViewController.m; sourceTree = "<group>"; };
 		446CB0A01DFF613900AEC0A9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Root.strings; sourceTree = "<group>"; };
 		446CB0A21DFF614600AEC0A9 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Root.strings; sourceTree = "<group>"; };
-		4484C8A61E32D8B400DF0CB6 /* PsiphonSettingsTextFieldViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PsiphonSettingsTextFieldViewCell.h; sourceTree = SOURCE_ROOT; };
-		4484C8A71E32D8B400DF0CB6 /* PsiphonSettingsTextFieldViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PsiphonSettingsTextFieldViewCell.m; sourceTree = SOURCE_ROOT; };
 		44864F861E708EE900865705 /* JAHPAuthenticatingHTTPProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JAHPAuthenticatingHTTPProtocol.h; sourceTree = "<group>"; };
 		44864F871E708EE900865705 /* JAHPAuthenticatingHTTPProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JAHPAuthenticatingHTTPProtocol.m; sourceTree = "<group>"; };
 		44864F881E708EE900865705 /* JAHPCacheStoragePolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JAHPCacheStoragePolicy.h; sourceTree = "<group>"; };
@@ -220,8 +219,12 @@
 		44E779451DE6038000854379 /* psiphon_config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = psiphon_config; path = Endless/psiphon_config; sourceTree = SOURCE_ROOT; };
 		4E1175171DD6310A009527EB /* SettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		4E1175181DD63123009527EB /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		4E6332C81E54F7280093819C /* Tutorial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Tutorial.h; path = Endless/Tutorial.h; sourceTree = SOURCE_ROOT; };
-		4E6332C91E54F7280093819C /* Tutorial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Tutorial.m; path = Endless/Tutorial.m; sourceTree = SOURCE_ROOT; };
+		4E628E971EF89D1A00F8B3B5 /* PsiphonSettingsTextFieldViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PsiphonSettingsTextFieldViewCell.h; path = Endless/PsiphonSettingsTextFieldViewCell.h; sourceTree = SOURCE_ROOT; };
+		4E628E981EF89D1A00F8B3B5 /* PsiphonSettingsTextFieldViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PsiphonSettingsTextFieldViewCell.m; path = Endless/PsiphonSettingsTextFieldViewCell.m; sourceTree = SOURCE_ROOT; };
+		4E628E9A1EF89D2C00F8B3B5 /* TutorialPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TutorialPageViewController.h; path = Endless/TutorialPageViewController.h; sourceTree = SOURCE_ROOT; };
+		4E628E9B1EF89D2C00F8B3B5 /* TutorialPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TutorialPageViewController.m; path = Endless/TutorialPageViewController.m; sourceTree = SOURCE_ROOT; };
+		4E628E9C1EF89D2C00F8B3B5 /* TutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TutorialViewController.h; path = Endless/TutorialViewController.h; sourceTree = SOURCE_ROOT; };
+		4E628E9D1EF89D2C00F8B3B5 /* TutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TutorialViewController.m; path = Endless/TutorialViewController.m; sourceTree = SOURCE_ROOT; };
 		4E6590C61EAE74DF00825A7A /* onboarding1.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = onboarding1.mov; path = Endless/Resources/onboarding1.mov; sourceTree = "<group>"; };
 		4E6590C71EAE74DF00825A7A /* onboarding2.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = onboarding2.mov; path = Endless/Resources/onboarding2.mov; sourceTree = "<group>"; };
 		4E6590C81EAE74DF00825A7A /* onboarding3.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = onboarding3.mov; path = Endless/Resources/onboarding3.mov; sourceTree = "<group>"; };
@@ -535,8 +538,8 @@
 				449316E11E8BFA4000D0708D /* PsiphonConnectionModalViewController.m */,
 				44BF73F01EB11B890048E3C7 /* PsiphonHomePagesEquivalentURLs.h */,
 				44BF73F11EB11B8A0048E3C7 /* PsiphonHomePagesEquivalentURLs.m */,
-				4484C8A61E32D8B400DF0CB6 /* PsiphonSettingsTextFieldViewCell.h */,
-				4484C8A71E32D8B400DF0CB6 /* PsiphonSettingsTextFieldViewCell.m */,
+				4E628E971EF89D1A00F8B3B5 /* PsiphonSettingsTextFieldViewCell.h */,
+				4E628E981EF89D1A00F8B3B5 /* PsiphonSettingsTextFieldViewCell.m */,
 				44E779411DE6031A00854379 /* PsiphonTunnel.framework */,
 				4EFB34781E366C370067C7C3 /* RegionAdapter.h */,
 				4EFB34791E366C370067C7C3 /* RegionAdapter.m */,
@@ -574,8 +577,10 @@
 				4EE4FF9B1ECA2700001C3D15 /* OnboardingLanguageViewController.m */,
 				4E70945E1E4CD14A00679B3F /* OnboardingViewController.h */,
 				4E70945F1E4CD14A00679B3F /* OnboardingViewController.m */,
-				4E6332C81E54F7280093819C /* Tutorial.h */,
-				4E6332C91E54F7280093819C /* Tutorial.m */,
+				4E628E9C1EF89D2C00F8B3B5 /* TutorialViewController.h */,
+				4E628E9D1EF89D2C00F8B3B5 /* TutorialViewController.m */,
+				4E628E9A1EF89D2C00F8B3B5 /* TutorialPageViewController.h */,
+				4E628E9B1EF89D2C00F8B3B5 /* TutorialPageViewController.m */,
 			);
 			name = Onboarding;
 			sourceTree = "<group>";
@@ -884,7 +889,6 @@
 				018333D21A35291200670CD1 /* HTTPSEverywhereRule.m in Sources */,
 				01AFEB4F1B4F2A5F00A02482 /* OnePasswordExtension.m in Sources */,
 				44864F8F1E708EE900865705 /* JAHPCacheStoragePolicy.m in Sources */,
-				4E6332CA1E54F7280093819C /* Tutorial.m in Sources */,
 				01801EA11A32CA2A002B4718 /* WebViewController.m in Sources */,
 				4E9610121E36A32C00CDE62E /* FeedbackUpload.m in Sources */,
 				44BF73F21EB11B8A0048E3C7 /* PsiphonHomePagesEquivalentURLs.m in Sources */,
@@ -892,7 +896,6 @@
 				444CEFB31E54DA2D0085F3D4 /* NYAlertView.m in Sources */,
 				4E7094601E4CD14A00679B3F /* OnboardingInfoViewController.m in Sources */,
 				4EFB34831E366E1D0067C7C3 /* FeedbackThumbsCell.m in Sources */,
-				4484C8A81E32D8B400DF0CB6 /* PsiphonSettingsTextFieldViewCell.m in Sources */,
 				01F2AE401B82666900D5651A /* SSLCertificateViewController.m in Sources */,
 				44864F911E708EE900865705 /* JAHPQNSURLSessionDemux.m in Sources */,
 				018333CA1A3505FB00670CD1 /* HTTPSEverywhere.m in Sources */,
@@ -908,12 +911,15 @@
 				44C7B2081E2040A700432BBB /* L10n+Swizzling.m in Sources */,
 				44E779421DE6031A00854379 /* AppDelegate.m in Sources */,
 				01EFA7FF1A63851400688398 /* LocalNetworkChecker.m in Sources */,
+				4E628E9F1EF89D2C00F8B3B5 /* TutorialViewController.m in Sources */,
 				4EB51ECE1E941FBD008676A7 /* AdjustableLabel.m in Sources */,
+				4E628E991EF89D1A00F8B3B5 /* PsiphonSettingsTextFieldViewCell.m in Sources */,
 				0182AD9B1AACC55400F3B7ED /* HTTPSEverywhereRuleController.m in Sources */,
 				010EEA691A43C8CF001E8B65 /* CookieJar.m in Sources */,
 				444CEFB41E54DA2D0085F3D4 /* NYAlertViewController.m in Sources */,
 				4E1175191DD63123009527EB /* SettingsViewController.m in Sources */,
 				4EE4E25F1ED4B51900167C0B /* LanguageSelectionViewController.m in Sources */,
+				4E628E9E1EF89D2C00F8B3B5 /* TutorialPageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -272,30 +272,6 @@ BOOL isRTL;
 		return nil;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
-{
-	if (self.embedded && [view isKindOfClass:[UITableViewHeaderFooterView class]]) {
-		UITableViewHeaderFooterView *tableViewHeaderFooterView = (UITableViewHeaderFooterView *) view;
-		int buttonSize = tableViewHeaderFooterView.frame.size.height - 8;
-
-		UIButton *b = [[UIButton alloc] init];
-
-		CGRect frame;
-		if(isRTL) {
-			frame = CGRectMake(buttonSize + 6, 3, buttonSize, buttonSize);
-		} else {
-			frame = CGRectMake(tableViewHeaderFooterView.frame.size.width - buttonSize - 6, 3, buttonSize, buttonSize);
-		}
-		[b setFrame:frame];
-		[b setImage:[UIImage imageNamed:@"close_round"] forState:UIControlStateNormal];
-		[b setClipsToBounds:YES];
-
-		[b addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
-
-		[tableViewHeaderFooterView addSubview:b];
-	}
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	BookmarkCell *cell = [tableView dequeueReusableCellWithIdentifier:@"bookmark"];
@@ -438,12 +414,6 @@ BOOL isRTL;
 	}];
 
 	[self presentViewController:uiac animated:YES completion:nil];
-}
-
-- (void)close
-{
-	[self removeFromParentViewController];
-	[[self view] removeFromSuperview];
 }
 
 @end

@@ -527,6 +527,8 @@ static NSString * kJAHPRecursiveRequestFlagProperty = @"com.jivesoftware.JAHPAut
 	/* in case our URL changed/upgraded, send back to the webview so it knows what our protocol is for "//" assets */
 	if (_isOrigin && ![[[mutableRequest URL] absoluteString] isEqualToString:[[request URL] absoluteString]]) {
 		[[self class] authenticatingHTTPProtocol:self logWithFormat:@"[Tab %@] canceling origin request to redirect %@ rewritten to %@", _wvt.tabIndex, [[self.request URL] absoluteString], [[mutableRequest URL] absoluteString]];
+		[_wvt setUrl:[mutableRequest URL]];
+		[_wvt loadURL:[mutableRequest URL]];
 		return nil;
 	}
 

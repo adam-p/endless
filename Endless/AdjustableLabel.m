@@ -17,8 +17,7 @@
  *
  */
 
-// Based on http://stackoverflow.com/questions/2844397/how-to-adjust-font-size-of-label-to-fit-the-rectangle/33657604#33657604
-
+// Based on https://stackoverflow.com/questions/2038975/resize-font-size-to-fill-uitextview/2943331#2943331
 
 #import "AdjustableLabel.h"
 
@@ -26,8 +25,6 @@
 @property(nonatomic) BOOL fontSizeAdjusted;
 @end
 
-// The size found S satisfies: S fits in the frame and and S+DELTA doesn't.
-#define DELTA 0.5
 #define MIN_FONT_SIZE 5.0f
 
 @implementation AdjustableLabel
@@ -47,7 +44,10 @@
 	_adjustsFontSizeToFitFrame = adjustsFontSizeToFitFrame;
 
 	if (adjustsFontSizeToFitFrame) {
-		self.numberOfLines = 0; // because boundingRectWithSize works like this was 0 anyway
+		self.scrollEnabled = NO;
+		self.userInteractionEnabled = NO;
+		self.textContainerInset = UIEdgeInsetsZero;
+		self.textContainer.lineFragmentPadding = 0;
 	}
 }
 
@@ -63,51 +63,22 @@
 
 - (void)adjustFontSizeToFrame
 {
-	AdjustableLabel* label = self;
+	CGFloat fontSize = _desiredFontSize;
 
-	if (label.text.length == 0) return;
+	self.font = [self.font fontWithSize:fontSize];
 
-	// Necessary or single-char texts won't be correctly adjusted
-	BOOL checkWidth = label.text.length == 1;
+	CGSize constraintSize = CGSizeMake(self.frame.size.width, MAXFLOAT);
+	CGRect requiredRect = [self.attributedText boundingRectWithSize:constraintSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
 
-	CGSize labelSize = label.frame.size;
-
-	// Fit label width-wise
-	CGSize constraintSize = CGSizeMake(checkWidth ? MAXFLOAT : labelSize.width, MAXFLOAT);
-
-	// Try all font sizes from desired to smallest font size
-	CGFloat maxFontSize = label.desiredFontSize;
-	CGFloat minFontSize = MIN_FONT_SIZE;
-
-	UIFont *font = label.font;
-
-	// Do a binary search to find the largest font size that
-	// will fit within the label's frame.
-	while (true)
+	while (requiredRect.size.height >= self.frame.size.height)
 	{
-		CGFloat fontSize = (maxFontSize + minFontSize) / 2;
+		if (fontSize <= MIN_FONT_SIZE)
+			break;
 
-		if (fontSize - minFontSize < DELTA / 2) {
-			font = [UIFont fontWithName:font.fontName size:minFontSize];
-			break; // Exit because we reached the biggest font size that fits
-		} else {
-			font = [UIFont fontWithName:font.fontName size:fontSize];
-		}
-
-		NSMutableAttributedString* attributedString = [[NSMutableAttributedString alloc] initWithAttributedString:label.attributedText];
-		[attributedString addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, label.attributedText.length)];
-
-		CGRect rect = [attributedString boundingRectWithSize:constraintSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-
-		// Now we discard a half
-		if(rect.size.height <= labelSize.height && (!checkWidth || rect.size.width <= labelSize.width)) {
-			minFontSize = fontSize; // the best size is in the bigger half
-		} else {
-			maxFontSize = fontSize; // the best size is in the smaller half
-		}
+		fontSize -= 1.0;
+		self.font = [self.font fontWithSize:fontSize];
+		requiredRect = [self.attributedText boundingRectWithSize:constraintSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
 	}
-
-	label.font = font;
 }
 
 @end

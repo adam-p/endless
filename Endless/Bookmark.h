@@ -15,6 +15,7 @@
 - (NSString *)urlString;
 - (void)setUrlString:(NSString *)urls;
 
++ (void)addDefaultBookmarks;
 + (void)retrieveList;
 + (void)persistList;
 + (NSMutableArray *)list;

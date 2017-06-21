@@ -17,18 +17,18 @@
  *
  */
 
-
-// Based on: http://stackoverflow.com/questions/2844397/how-to-adjust-font-size-of-label-to-fit-the-rectangle/33657604#33657604
-
-
 #import <UIKit/UIKit.h>
+#import "OnboardingViewController.h"
 
-@interface AdjustableLabel : UITextView
-/**
- If set to YES, font size will be automatically adjusted to frame.
- Note: numberOfLines can't be specified so it will be set to 0.
- */
-@property(nonatomic) BOOL adjustsFontSizeToFitFrame;
-@property(nonatomic) CGFloat desiredFontSize;
-- (id)initWithDesiredFontSize:(CGFloat)fontSize;
+@protocol TutorialPageViewControllerDelegate <NSObject>
+- (void)onboardingEnded;
+- (void)tutorialEnded;
+- (CGRect)getBottomToolbarFrame;
+- (CGRect)getConnectionIndicatorFrame;
+- (CGRect)getCurrentSpotlightFrame:(NSUInteger)step;
+@end
+
+@interface TutorialPageViewController : UIViewController <OnboardingViewControllerDelegate>
+@property (assign, nonatomic) NSUInteger index;
+@property (nonatomic, weak) id<TutorialPageViewControllerDelegate> delegate;
 @end

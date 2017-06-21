@@ -9,24 +9,13 @@
 #import "IASKAppSettingsViewController.h"
 #import "SettingsViewController.h"
 #import "WebViewTab.h"
-
-#import "Tutorial.h"
+#import "TutorialViewController.h"
 
 #define PAN_GESTURE_RECOGNIZER_NONE 0
 #define PAN_GESTURE_RECOGNIZER_UP 1
 #define PAN_GESTURE_RECOGNIZER_SIDE 2
 
-/* Psiphon tutorial steps */
-typedef NS_ENUM(NSInteger, PsiphonTutorialStep)
-{
-	PsiphonTutorialStep1 = 0,
-	PsiphonTutorialStep2,
-	PsiphonTutorialStep3
-};
-
-@interface WebViewController : UIViewController <UITableViewDelegate, UITextFieldDelegate,
-	UIGestureRecognizerDelegate, UIScrollViewDelegate, SettingsViewControllerDelegate,
-		TutorialDelegate, FinalPageObserver>
+@interface WebViewController : UIViewController <UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, SettingsViewControllerDelegate, TutorialViewControllerDelegate, FinalPageObserver>
 
 - (NSMutableArray *)webViewTabs;
 - (__strong WebViewTab *)curWebViewTab;
@@ -41,6 +30,7 @@ typedef NS_ENUM(NSInteger, PsiphonTutorialStep)
 - (void)removeTab:(NSNumber *)tabNumber;
 - (void)removeTabOpenedByHash:(NSNumber *)tabNumber;
 - (void)removeAllTabs;
+- (void)removeAllTabsForBackgrounded;
 
 - (void)webViewTouched;
 - (void)updateProgress;
@@ -49,14 +39,13 @@ typedef NS_ENUM(NSInteger, PsiphonTutorialStep)
 - (void)forceRefresh;
 - (void)prepareForNewURLFromString:(NSString *)url;
 
-
 - (void) stopLoading;
 
 - (void) overlayTutorial;
 - (void) focusTab:(WebViewTab *)tab andRefresh:(BOOL)refresh animated:(BOOL)animated;
 - (void) openPsiphonHomePage:(NSString *) homePage;
 - (void) showPsiphonConnectionStatusAlert;
-
+- (void) setRestorationTabCurrent;
 
 @property (nonatomic) BOOL showTutorial;
 @property (nonatomic) BOOL resumePsiphonStart;

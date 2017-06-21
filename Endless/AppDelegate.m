@@ -32,7 +32,6 @@
 
 @implementation AppDelegate {
 	BOOL _needsResume;
-	BOOL _shouldOpenHomePages;
 	// Array of home pages from the handshake.
 	// We will pick only one URL from this array
 	// when it's time to open a home page
@@ -41,6 +40,8 @@
 	SystemSoundID _notificationSound;
 	Reachability *_reachability;
 	UIAlertController *authAlertController;
+	NSTimer *_appActiveTimer;
+	NSInteger _lastActiveTickTime;
 }
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -65,35 +66,21 @@
 
 	BOOL isOnboarding = ![[NSUserDefaults standardUserDefaults] boolForKey:kHasBeenOnboardedKey];
 	self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-
-	if (isOnboarding) {
-		OnboardingViewController *onboarding = [[OnboardingViewController alloc] init];
-		onboarding.delegate = self;
-		self.window.rootViewController = onboarding;
-		self.window.rootViewController.restorationIdentifier = @"OnboardingViewController";
-	} else {
-		self.window.rootViewController = [[WebViewController alloc] init];
-		self.window.rootViewController.restorationIdentifier = @"WebViewController";
-	}
+	self.window.rootViewController = [[WebViewController alloc] init];
+	self.window.rootViewController.restorationIdentifier = @"WebViewController";
+	[(WebViewController*)self.window.rootViewController setResumePsiphonStart:isOnboarding];
+	[(WebViewController*)self.window.rootViewController setShowTutorial:isOnboarding];
 
 	return YES;
 }
 
 - (void)reloadOnboardingForl10n {
-	OnboardingViewController *newOnboarding = [[OnboardingViewController alloc] init];
-	newOnboarding.restorationIdentifier = @"OnboardingViewController";
-	newOnboarding.delegate = self;
+	WebViewController *newOnboarding = [[WebViewController alloc] init];
+	newOnboarding.restorationIdentifier = @"WebViewController";
+	newOnboarding.resumePsiphonStart = YES;
+	newOnboarding.showTutorial = YES;
 
 	[self changeRootViewController:newOnboarding];
-}
-
-- (void)onboardingEnded {
-	WebViewController *webViewController = [[WebViewController alloc] init];
-	webViewController.restorationIdentifier = @"WebViewController";
-	webViewController.resumePsiphonStart = YES;
-	webViewController.showTutorial = YES;
-
-	[self changeRootViewController:webViewController];
 }
 
 // From https://gist.github.com/gimenete/53704124583b5df3b407
@@ -162,8 +149,15 @@
 	}
 
 	if ([userDefaults boolForKey:@"clearAllWhenBackgrounded"]) {
-		[[self webViewController] removeAllTabs];
+		[[self webViewController] removeAllTabsForBackgrounded];
 		[CookieJar clearAllData];
+	}
+
+	if(_appActiveTimer && [_appActiveTimer isValid]) {
+		// make timer selector get called on its target immediately
+		[_appActiveTimer fire];
+		[_appActiveTimer invalidate];
+		_appActiveTimer = nil;
 	}
 
 	[application ignoreSnapshotOnNextApplicationLaunch];
@@ -174,6 +168,27 @@
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:kHasBeenOnboardedKey]) {
 		[self startPsiphonOnlyIfNeeded:YES];
 	}
+	// If the key kAppActiveTimeSinceLastHomePage exists
+	// then we opened a home page at least once
+	// App active timer should be started right after
+	// the app becomes active in that case
+	BOOL shouldStartTimer = ([[NSUserDefaults standardUserDefaults] objectForKey:kAppActiveTimeSinceLastHomePage] != nil);
+	if(shouldStartTimer) {
+		[self startAppActiveTimer];
+	}
+}
+
+- (void) startAppActiveTimer {
+	if (!_appActiveTimer || ![_appActiveTimer isValid]) {
+		_lastActiveTickTime = (NSInteger)CACurrentMediaTime();
+		_appActiveTimer = [NSTimer scheduledTimerWithTimeInterval:APP_ACTIVE_TIMER_INTERVAL_SECONDS
+														   target:self
+														 selector:@selector(onAppActiveTimerTick:)
+														 userInfo:nil
+														  repeats:YES];
+	}
+	// make timer selector get called on its target immediately once
+	[_appActiveTimer fire];
 }
 
 - (ConnectionState)getConnectionState {
@@ -299,6 +314,28 @@
 	return (AppDelegate *)[UIApplication sharedApplication].delegate;
 }
 
+- (void)onAppActiveTimerTick:(NSTimer *)timer {
+	NSInteger elapsedInterval = (NSInteger)CACurrentMediaTime() - _lastActiveTickTime;
+	if(elapsedInterval > 0) {
+		NSInteger currentAppActiveTime = [[NSUserDefaults standardUserDefaults] integerForKey:kAppActiveTimeSinceLastHomePage];
+		if(currentAppActiveTime < 0) {
+			// Guard against defaults corruption.
+			// We care less if the number is too large, worst case we will prematurely
+			// open a home page on the next reconnect.
+			currentAppActiveTime = 0;
+		}
+		NSInteger newAppActiveTime;
+
+		if(!__builtin_add_overflow(currentAppActiveTime, elapsedInterval, &newAppActiveTime)){
+			// no overlow, write new value to defaults
+			[[NSUserDefaults standardUserDefaults] setInteger:(newAppActiveTime) forKey:kAppActiveTimeSinceLastHomePage];
+		}
+		// do nothing in case of overflow
+	}
+
+	_lastActiveTickTime = (NSInteger)CACurrentMediaTime();
+}
+
 // MARK: TunneledAppDelegate protocol implementation
 
 - (NSString *) getPsiphonConfig {
@@ -390,7 +427,6 @@
 			if(_handshakeHomePages && [_handshakeHomePages count] > 0) {
 				[_handshakeHomePages removeAllObjects];
 			}
-			_shouldOpenHomePages = true;
 		}
 		else if (newState == PsiphonConnectionStateConnected) {
 			[JAHPAuthenticatingHTTPProtocol resetSharedDemux];
@@ -405,12 +441,58 @@
 				AudioServicesPlaySystemSound (_notificationSound);
 			}
 
-			if(_shouldOpenHomePages && _handshakeHomePages && [_handshakeHomePages count] > 0) {
-				// pick single URL from the handshake
-				NSString *selectedHomePage = _handshakeHomePages[0];
+			// If kAppActiveTimeSinceLastHomePage doesn't exist then it is probably the very first app run
+			// and we should show a home page
+			BOOL shouldOpenHomePage = ([[NSUserDefaults standardUserDefaults] objectForKey:kAppActiveTimeSinceLastHomePage] == nil);
+			NSLog(@"shouldOpenHomePage == %@ , kAppActiveTimeSinceLastHomePage exists == %@", shouldOpenHomePage ? @"YES" : @"NO", !shouldOpenHomePage ? @"YES" : @"NO");
 
-				[self.webViewController openPsiphonHomePage: selectedHomePage];
-				_shouldOpenHomePages = false;
+			if(!shouldOpenHomePage) {
+				// Check if enough uptime has passed and we should show a home page
+				NSInteger activeTime = [[NSUserDefaults standardUserDefaults] integerForKey:kAppActiveTimeSinceLastHomePage];
+
+				// If activeTime is negative then defaults are probably corrupted
+				// Fix it by showing a home page which will also reset the corrupted value to 0
+				shouldOpenHomePage = (activeTime < 0 || activeTime > APP_ACTIVE_TIME_BEFORE_NEXT_HOMEPAGE_SECONDS);
+#ifdef TRACE
+				NSLog(@"shouldOpenHomePage == %@, App active time == %ld, APP_ACTIVE_TIME_BEFORE_NEXT_HOMEPAGE_SECONDS == %d", shouldOpenHomePage ? @"YES" : @"NO", activeTime, APP_ACTIVE_TIME_BEFORE_NEXT_HOMEPAGE_SECONDS);
+#endif
+			}
+
+			if(!shouldOpenHomePage) {
+				// Check if there are any tabs. If none then we should show a home page
+				shouldOpenHomePage = ([[[self webViewController] webViewTabs] count]== 0);
+				if(!shouldOpenHomePage) {
+					// Set current index if restoration tab.
+					// That will refresh the tab's content.
+					[[self webViewController] setRestorationTabCurrent];
+				}
+#ifdef TRACE
+				NSLog(@"shouldOpenHomePage == %@, [[[self webViewController] webViewTabs] count]== %lu", shouldOpenHomePage ? @"YES" : @"NO", (unsigned long)[[[self webViewController] webViewTabs] count]);
+#endif
+			}
+
+			if(shouldOpenHomePage) {
+				if(_handshakeHomePages && [_handshakeHomePages count] > 0) {
+					// pick single URL from the handshake
+					NSString *selectedHomePage = _handshakeHomePages[0];
+
+					[self.webViewController openPsiphonHomePage: selectedHomePage];
+
+					// If the key kAppActiveTimeSinceLastHomePage doesn't exist
+					// we need to start app active timer
+					// after opening a home page.
+					// Otherwise it should be started when the app becomes active
+					// in the - (void)applicationDidBecomeActive:(UIApplication *)application
+					BOOL shouldStartTimer = ([[NSUserDefaults standardUserDefaults] objectForKey:kAppActiveTimeSinceLastHomePage] == nil);
+
+					// Reset active time since last home page once we open a homepage
+					// That will also create kAppActiveTimeSinceLastHomePage if it didn't exist
+					[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:kAppActiveTimeSinceLastHomePage];
+
+					if(shouldStartTimer) {
+						[self startAppActiveTimer];
+					}
+				}
 			}
 		}
 	});

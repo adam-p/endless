@@ -26,6 +26,8 @@
 #define kRightChevronImageName @"right-chevron"
 #define kLanguageBoxFont @"SanFranciscoDisplay-Regular"
 
+#define knextButtonHeight 40.0f
+
 @interface PortraitNavigationController : UINavigationController
 @end
 
@@ -42,6 +44,8 @@
 // (i.e. [[NSUserDefaults standardUserDefaults] boolForKey:kHasBeenOnboardedKey] == NO).
 // Allow user to choose their desired language before continuing.
 @implementation OnboardingLanguageViewController {
+	UIButton *nextButton;
+
 	UIImageView *arrow;
 	UIImageView *globe;
 
@@ -58,6 +62,14 @@
 @synthesize index = _index;
 @synthesize delegate = _delegate;
 
+- (void)viewDidLayoutSubviews {
+	[super viewDidLayoutSubviews];
+
+	[self.view layoutIfNeeded]; // ensure views have been laid out
+
+	nextButton.layer.cornerRadius = nextButton.frame.size.height / 2;
+}
+
 - (void)viewDidLoad {
 	[super viewDidLoad];
 
@@ -68,6 +80,7 @@
 	[self setupLanguageBox];
 	[self setupLanguageBoxHeader];
 	[self setupLanguageBoxSubviews];
+	[self setupnextButton];
 
 	[languageBox addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
 																			  action:@selector(handleLanguageBoxClick)]];
@@ -286,6 +299,58 @@
 	}
 }
 
+- (void)setupnextButton {
+	/* Setup lets go button */
+	nextButton = [[UIButton alloc] init];
+	nextButton.backgroundColor = [UIColor colorWithRed:0.83 green:0.25 blue:0.16 alpha:1.0];
+	nextButton.hidden = false;
+	[nextButton setTitle:NSLocalizedString(@"Next", @"Text of the button that the user presses to proceed to the next screen of onboarding") forState:UIControlStateNormal];
+	nextButton.layer.cornerRadius = knextButtonHeight / 2;
+	nextButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16.0f];
+	nextButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+
+	[nextButton addTarget:self
+					 action:@selector(moveToNextView)
+		   forControlEvents:UIControlEventTouchUpInside];
+
+	nextButton.translatesAutoresizingMaskIntoConstraints = NO;
+
+	/* add nextButton to view */
+	[self.view addSubview:nextButton];
+
+
+	/* nextButton.width = 0.55 * self.view.width */
+	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:nextButton
+														  attribute:NSLayoutAttributeWidth
+														  relatedBy:NSLayoutRelationEqual
+															 toItem:self.view
+														  attribute:NSLayoutAttributeWidth
+														 multiplier:.55f
+														   constant:0]];
+
+	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:nextButton
+														  attribute:NSLayoutAttributeHeight
+														  relatedBy:NSLayoutRelationEqual
+															 toItem:self.view
+														  attribute:NSLayoutAttributeHeight
+														 multiplier:.076f
+														   constant:0]];
+
+	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:nextButton
+														  attribute:NSLayoutAttributeCenterX
+														  relatedBy:NSLayoutRelationEqual
+															 toItem:self.view
+														  attribute:NSLayoutAttributeCenterX
+														 multiplier:1.f
+														   constant:0]];
+
+	NSDictionary *viewsDictionary = @{
+									 @"nextButton": nextButton
+									 };
+
+	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[nextButton]|" options:NSLayoutFormatAlignAllCenterX metrics:0 views:viewsDictionary]];
+}
+
 - (void)handleLanguageBoxClick {
 	LanguageSelectionViewController *targetViewController = [[LanguageSelectionViewController alloc] init];
 	PortraitNavigationController *navController = [[PortraitNavigationController alloc] initWithRootViewController:targetViewController];
@@ -297,11 +362,11 @@
 	[self presentViewController:onboarding animated:NO completion:nil];
 }
 
-- (void)onboardingEnded {
+- (void)moveToNextView {
 	id<OnboardingChildViewControllerDelegate> strongDelegate = self.delegate;
 
-	if ([strongDelegate respondsToSelector:@selector(onboardingEnded)]) {
-		[strongDelegate onboardingEnded];
+	if ([strongDelegate respondsToSelector:@selector(moveToViewAtIndex:)]) {
+		[strongDelegate moveToViewAtIndex:self.index+1];
 	}
 	[self dismissViewControllerAnimated:NO completion:nil];
 }

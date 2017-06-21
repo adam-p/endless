@@ -105,11 +105,11 @@
 
 	switch (style) {
 		case ICDMaterialActivityIndicatorViewStyleSmall:
-			self.lineWidth = 2.0;
+			self.lineWidth = 1.0;
 			self.duration = 0.8;
 			break;
 		case ICDMaterialActivityIndicatorViewStyleMedium:
-			self.lineWidth = 4.0;
+			self.lineWidth = 3.0;
 			self.duration = 0.8;
 			break;
 		case ICDMaterialActivityIndicatorViewStyleLarge:

@@ -26,11 +26,13 @@
 @protocol OnboardingChildViewControllerDelegate <NSObject>
 - (CGFloat)getBannerOffset;
 - (void)onboardingEnded;
+- (void)moveToViewAtIndex:(NSInteger)index;
 @end
 
 @interface OnboardingViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, OnboardingChildViewControllerDelegate>
 @property (nonatomic, weak) id<OnboardingViewControllerDelegate> delegate;
 @property (strong, nonatomic) UIPageViewController *pageController;
+- (void)moveToNextPage;
 @end
 
 @protocol OnboardingChildViewController <NSObject>

@@ -33,6 +33,8 @@
 
 @implementation WebViewTab {
 	NSMutableArray *equivalentURLS;
+
+	BOOL isRTL;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -45,6 +47,8 @@
 	self = [super init];
 
 	_viewHolder = [[UIView alloc] initWithFrame:frame];
+
+	isRTL = ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft);
 
 	/* re-register user agent with our hash, which should only affect this UIWebView */
 	[[NSUserDefaults standardUserDefaults] registerDefaults:@{ @"UserAgent": [NSString stringWithFormat:@"%@/%lu", [[AppDelegate sharedAppDelegate] defaultUserAgent], (unsigned long)self.hash] }];
@@ -94,11 +98,53 @@
 	[_closer setTextColor:[UIColor whiteColor]];
 	[_closer setFont:[UIFont systemFontOfSize:24.0]];
 	[_closer setText:[NSString stringWithFormat:@"%C", 0x2715]];
+	[_closer setTextAlignment:NSTextAlignmentCenter];
+	[_closer setAdjustsFontSizeToFitWidth:YES];
 
 	[_viewHolder addSubview:_titleHolder];
 	[_viewHolder addSubview:_title];
 	[_viewHolder addSubview:_closer];
 	[_viewHolder addSubview:_webView];
+
+	// Setup autolayout for closer (close tab 'X' in all-tabs view)
+	_closer.translatesAutoresizingMaskIntoConstraints = NO;
+
+	// Center vertically in titleHolder
+	[_viewHolder addConstraint:[NSLayoutConstraint constraintWithItem:_closer
+															attribute:NSLayoutAttributeCenterY
+															relatedBy:NSLayoutRelationEqual
+															   toItem:_titleHolder
+															attribute:NSLayoutAttributeCenterY
+														   multiplier:1.0f
+															 constant:0.f]];
+
+	// closer.height == titleHolder.height * 0.8
+	[_viewHolder addConstraint:[NSLayoutConstraint constraintWithItem:_closer
+															attribute:NSLayoutAttributeHeight
+															relatedBy:NSLayoutRelationEqual
+															   toItem:_titleHolder
+															attribute:NSLayoutAttributeHeight
+														   multiplier:.8f
+															 constant:0.f]];
+
+	// closer.width == closer.height
+	[_viewHolder addConstraint:[NSLayoutConstraint constraintWithItem:_closer
+															attribute:NSLayoutAttributeWidth
+															relatedBy:NSLayoutRelationEqual
+															   toItem:_closer
+															attribute:NSLayoutAttributeHeight
+														   multiplier:1.f
+															 constant:0.f]];
+
+	// isRTL == false -> closer.left == titleHolder.left + 3
+	// isRTL == true -> closer.right == titleHolder.right - 3
+	[_viewHolder addConstraint:[NSLayoutConstraint constraintWithItem:_closer
+															attribute:isRTL ? NSLayoutAttributeRight : NSLayoutAttributeLeft
+															relatedBy:NSLayoutRelationEqual
+															   toItem:_titleHolder
+															attribute:isRTL ? NSLayoutAttributeRight : NSLayoutAttributeLeft
+														   multiplier:1.f
+															 constant:isRTL ? -3.f : 3.f]];
 
 	/* setup shadow that will be shown when zooming out */
 	[[_viewHolder layer] setMasksToBounds:NO];
@@ -207,8 +253,7 @@
 {
 	[self.viewHolder setFrame:frame];
 	[self.webView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
-	[self.titleHolder setFrame:CGRectMake(0, -26, frame.size.width, 32)];
-	[self.closer setFrame:CGRectMake(3, -22, 18, 18)];
+	[self.titleHolder setFrame:CGRectMake(0, -26, frame.size.width, 26)];
 	[self.title setFrame:CGRectMake(22, -22, frame.size.width - 22 - 22, 18)];
 }
 

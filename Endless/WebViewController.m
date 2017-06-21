@@ -5,6 +5,7 @@
  * See LICENSE file for redistribution terms.
  */
 
+#import "Bookmark.h"
 #import "BookmarkController.h"
 #import "HTTPSEverywhereRuleController.h"
 #import "IASKSettingsReader.h"
@@ -18,13 +19,12 @@
 #import "WebViewTab.h"
 #import "PsiphonConnectionIndicator.h"
 #import "PsiphonConnectionModalViewController.h"
-#import "Tutorial.h"
 #import "PsiphonHomePagesEquivalentURLs.h"
 
 #define TOOLBAR_HEIGHT 44
 #define TOOLBAR_PADDING 6
-#define TOOLBAR_BUTTON_SIZE 30
-#define kLetsGoButtonHeight 60
+#define TOOLBAR_BUTTON_SIZE 40
+#define kBookmarksCancelButtonWidth 70
 
 static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSString *b) {
 	return (([a length] == 0) && ([b length] == 0)) || ([a isEqualToString:b]);
@@ -45,6 +45,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	UIScrollView *tabScroller;
 	UIPageControl *tabChooser;
 	int curTabIndex;
+	int curTabIndexFromRestoration;
 	NSMutableArray *webViewTabs;
 
 	PsiphonConnectionIndicator *psiphonConnectionIndicator;
@@ -80,17 +81,28 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	SettingsViewController *appSettingsViewController;
 
 	BookmarkController *bookmarks;
-
-	BOOL isRTL;
+	UIButton *bookmarksCancelButton;
+	NSLayoutConstraint *bookmarksViewBottom;
 
 	NSMutableDictionary *preferencesSnapshot;
 
-	Tutorial *tutorial;
+	TutorialViewController *tutorial;
 
 	UIPanGestureRecognizer *tabSelectionPanGestureRecognizer;
 	CGPoint originalPoint; // Where the tab was before dragging
 	CGPoint panGestureOriginPoint; // Where the user started dragging
 	int panGestureRecognizerType; // 0: None, 1: Remove tab, 2: Change page
+
+	BOOL isRTL;
+}
+
+// Force portrait orientation during onboarding
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+	if (self.showTutorial && ![[NSUserDefaults standardUserDefaults] boolForKey:kHasBeenOnboardedKey]) {
+		return (UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown);
+	} else {
+		return UIInterfaceOrientationMaskAll;
+	}
 }
 
 -(id)init {
@@ -111,6 +123,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 
 	webViewTabs = [[NSMutableArray alloc] initWithCapacity:10];
 	curTabIndex = 0;
+	curTabIndexFromRestoration = 0;
 
 	self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, [UIScreen mainScreen].applicationFrame.size.height)];
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
@@ -122,7 +135,6 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	navigationBar = [[UIView alloc] init];
 	[navigationBar setClipsToBounds:YES];
 	[[self view] addSubview:navigationBar];
-
 
 	bottomToolBar = [[UIToolbar alloc] init];
 	[bottomToolBar setClipsToBounds:YES];
@@ -204,7 +216,12 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	[tabCount setTextAlignment:NSTextAlignmentCenter];
 	[tabCount setFont:[UIFont systemFontOfSize:11]];
 	[tabCount setTextColor:[progressBar tintColor]];
-	[tabCount setFrame:CGRectMake(7, 11, 12, 12)];
+	[tabCount setAdjustsFontSizeToFitWidth:YES];
+	// offset ratios from centre of `tabsImage` to
+	// centre of the square in the forefront of `tabsImage`.
+	CGSize tabCountOffsetRatios = CGSizeMake(-1/8.f, 1/8.f);
+	[tabCount setFrame:CGRectMake(0, 0, 12, 12)];
+	[tabCount setCenter:CGPointMake(tabsButton.center.x + (tabsButton.frame.size.width * tabCountOffsetRatios.width)/2, tabsButton.center.y + (tabsButton.frame.size.height * tabCountOffsetRatios.height)/2)];
 	[tabsButton addSubview:tabCount];
 
 	settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -247,6 +264,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	[tabScroller setDelegate:self];
 
 	tabChooser = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, TOOLBAR_HEIGHT)];
+
 	[tabChooser setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin)];
 	[tabChooser addTarget:self action:@selector(slideToCurrentTab:) forControlEvents:UIControlEventValueChanged];
 	[tabChooser addTarget:self action:@selector(tappedOnPageControlDot:) forControlEvents:UIControlEventTouchUpInside];
@@ -269,6 +287,12 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 						[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil],
 						tabDoneButton,
 						nil];
+
+	UITapGestureRecognizer *singleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOnNavBar:)];
+	singleTapGestureRecognizer.numberOfTapsRequired = 1;
+	singleTapGestureRecognizer.enabled = YES;
+	singleTapGestureRecognizer.cancelsTouchesInView = NO;
+	[navigationBar addGestureRecognizer:singleTapGestureRecognizer];
 
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -349,18 +373,12 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 		[[wvt title] setText:[params objectForKey:@"title"]];
 	}
 
-	/*
-	 NSNumber *cp = [coder decodeObjectForKey:@"curTabIndex"];
-	 if (cp != nil) {
-		if ([cp intValue] <= [webViewTabs count] - 1)
-	 [self setCurTabIndex:[cp intValue]];
-
-		[tabScroller setContentOffset:CGPointMake([self frameForTabIndex:tabChooser.currentPage].origin.x, 0) animated:NO];
-
-		// wait for the UI to catch up
-		[[self curWebViewTab] performSelector:@selector(refresh) withObject:nil afterDelay:0.5];
-	 }
-	 */
+	NSNumber *cp = [coder decodeObjectForKey:@"curTabIndex"];
+	if (cp != nil && [webViewTabs count] > 0) {
+		if ([cp intValue] <= [webViewTabs count] - 1) {
+			curTabIndexFromRestoration = [cp intValue];
+		}
+	}
 
 	[self updateSearchBarDetails];
 }
@@ -381,8 +399,9 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	}
 
 	if (self.showTutorial) {
-		self.showTutorial = NO;
-		[self overlayTutorial];
+		if (tutorial == nil) {
+			[self overlayTutorial];
+		}
 		return;
 	}
 
@@ -406,7 +425,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 		}
 	}
 
-	if (shouldShowSplash) {
+	if (shouldShowSplash && !self.showTutorial) {
 		__weak  WebViewController *weakSelf = self;
 
 		PsiphonConnectionSplashViewController *connectionSplashViewController = [[PsiphonConnectionSplashViewController alloc]
@@ -454,7 +473,6 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 		[self adjustLayout];
 	} completion:nil];
 }
-
 
 - (void) showToolBars:(BOOL) show {
 	CGFloat navBarOffsetY  = 0.0;
@@ -525,8 +543,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 
 
 	navigationBar.frame = tabToolbar.frame = CGRectMake(0, statusBarHeight, self.view.frame.size.width, TOOLBAR_HEIGHT);
-	bottomToolBar.frame = CGRectMake(0, self.view.frame.size.height - TOOLBAR_HEIGHT - keyboardHeight, size.width, TOOLBAR_HEIGHT + keyboardHeight);
-
+	bottomToolBar.frame = CGRectMake(0, self.view.frame.size.height - TOOLBAR_HEIGHT, size.width, TOOLBAR_HEIGHT);
 
 	progressBar.frame = CGRectMake(0, navigationBar.frame.size.height - 2, navigationBar.frame.size.width, 2);
 
@@ -560,6 +577,12 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	urlField.frame = [self frameForUrlField];
 	psiphonConnectionIndicator.frame = [self frameForConnectionIndicator];
 	[self updateSearchBarDetails];
+
+	if (bookmarks != nil && bookmarksViewBottom != nil) {
+		bookmarksViewBottom.constant = keyboardHeight;
+		[self.view layoutIfNeeded];
+	}
+
 	[self.view setNeedsDisplay];
 }
 
@@ -573,14 +596,14 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	CGRect frame;
 	if(isRTL) {
 		frame = CGRectMake(size.width - TOOLBAR_HEIGHT + TOOLBAR_PADDING,
-									TOOLBAR_PADDING,
-									TOOLBAR_HEIGHT - 2 * TOOLBAR_PADDING,
-									TOOLBAR_HEIGHT - 2 * TOOLBAR_PADDING);
+						   TOOLBAR_PADDING,
+						   TOOLBAR_HEIGHT - 2 * TOOLBAR_PADDING,
+						   TOOLBAR_HEIGHT - 2 * TOOLBAR_PADDING);
 	} else {
 		frame = CGRectMake(TOOLBAR_PADDING,
-									TOOLBAR_PADDING,
-									TOOLBAR_HEIGHT - 2 * TOOLBAR_PADDING,
-									TOOLBAR_HEIGHT - 2 * TOOLBAR_PADDING);
+						   TOOLBAR_PADDING,
+						   TOOLBAR_HEIGHT - 2 * TOOLBAR_PADDING,
+						   TOOLBAR_HEIGHT - 2 * TOOLBAR_PADDING);
 	}
 	return frame;
 
@@ -596,6 +619,13 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	}
 	float y = TOOLBAR_PADDING;
 	float w = navigationBar.frame.size.width - 3 * TOOLBAR_PADDING - TOOLBAR_BUTTON_SIZE;
+	if ([urlField isFirstResponder]) { // embedded bookmarks view is visible
+		// create space for embedded bookmarks view cancel button
+		if (isRTL) {
+			x += kBookmarksCancelButtonWidth;
+		}
+		w -= kBookmarksCancelButtonWidth;
+	}
 	float h = TOOLBAR_HEIGHT - 2 * TOOLBAR_PADDING;
 	return CGRectMake(x, y, w, h);
 }
@@ -795,6 +825,12 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	}];
 }
 
+- (void) setRestorationTabCurrent {
+	if( [[self webViewTabs] count] > 0) {
+		[self setCurTabIndex:curTabIndexFromRestoration];
+	}
+}
+
 - (void) focusTab:(WebViewTab *)tab andRefresh:(BOOL)refresh animated:(BOOL)animated {
 	int focusTabNumber = tab.tabIndex.intValue;
 	[self setCurTabIndex:focusTabNumber];
@@ -828,6 +864,16 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	[tabChooser setNumberOfPages:0];
 
 	[self updateSearchBarDetails];
+}
+
+// Remove all tabs and open a blank one
+// with embedded bookmarks view visible.
+- (void)removeAllTabsForBackgrounded {
+	[self removeAllTabs];
+
+	[self addNewTabForURL:nil forRestoration:NO andFocus:YES withCompletionBlock:nil];
+
+	[urlField becomeFirstResponder];
 }
 
 - (void)updateSearchBarDetails
@@ -975,10 +1021,107 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	if (bookmarks == nil) {
 		bookmarks = [[BookmarkController alloc] init];
 		bookmarks.embedded = true;
-		bookmarks.view.frame = CGRectMake(0, navigationBar.frame.size.height + navigationBar.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height);
+
 		[self addChildViewController:bookmarks];
 		[self.view insertSubview:[bookmarks view] belowSubview:navigationBar];
+
+		// Setup autolayout
+		bookmarks.view.translatesAutoresizingMaskIntoConstraints = NO;
+		[self.view addConstraint:[NSLayoutConstraint constraintWithItem:bookmarks.view
+															  attribute:NSLayoutAttributeTop
+															  relatedBy:NSLayoutRelationEqual
+																 toItem:navigationBar
+															  attribute:NSLayoutAttributeBottom
+															 multiplier:1.0f
+															   constant:0.f]];
+
+		bookmarksViewBottom = [NSLayoutConstraint constraintWithItem:bookmarks.view
+														   attribute:NSLayoutAttributeBottom
+														   relatedBy:NSLayoutRelationEqual
+															  toItem:bottomToolBar
+														   attribute:NSLayoutAttributeTop
+														  multiplier:1.0f
+															constant:keyboardHeight];
+		[self.view addConstraint:bookmarksViewBottom];
+
+		[self.view addConstraint:[NSLayoutConstraint constraintWithItem:bookmarks.view
+															  attribute:NSLayoutAttributeLeft
+															  relatedBy:NSLayoutRelationEqual
+																 toItem:self.view
+															  attribute:NSLayoutAttributeLeft
+															 multiplier:1.0f
+															   constant:0.f]];
+
+		[self.view addConstraint:[NSLayoutConstraint constraintWithItem:bookmarks.view
+															  attribute:NSLayoutAttributeRight
+															  relatedBy:NSLayoutRelationEqual
+																 toItem:navigationBar
+															  attribute:NSLayoutAttributeRight
+															 multiplier:1.0f
+															   constant:0.f]];
+
+		[self.view layoutIfNeeded];
 	}
+
+	if (bookmarksCancelButton == nil) {
+		// Setup cancel button which dimisses embedded bookmarks view
+		bookmarksCancelButton = [[UIButton alloc] init];
+		[bookmarksCancelButton setTitle:NSLocalizedString(@"Cancel", @"Cancel button text which allows user to exit bookmarks view") forState:UIControlStateNormal];
+		[bookmarksCancelButton.titleLabel setFont:[UIFont systemFontOfSize:20.0f]];
+		[bookmarksCancelButton.titleLabel setAdjustsFontSizeToFitWidth:YES];
+		[bookmarksCancelButton setTitleColor:[progressBar tintColor] forState:UIControlStateNormal];
+		[bookmarksCancelButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
+
+		[bookmarksCancelButton addTarget:self
+							action:@selector(dismissEmbeddedBookmarksView)
+				  forControlEvents:UIControlEventTouchUpInside];
+
+		bookmarksCancelButton.translatesAutoresizingMaskIntoConstraints = NO;
+		[navigationBar addSubview:bookmarksCancelButton];
+
+		// Autolayout
+		[navigationBar addConstraint:[NSLayoutConstraint constraintWithItem:bookmarksCancelButton
+																  attribute:isRTL ? NSLayoutAttributeRight : NSLayoutAttributeLeft
+																  relatedBy:NSLayoutRelationEqual
+																	 toItem:urlField
+																  attribute:isRTL ? NSLayoutAttributeLeft : NSLayoutAttributeRight
+																 multiplier:1.0f
+																   constant:0.f]];
+
+		CGFloat cancelButtonWidth = kBookmarksCancelButtonWidth;
+		if (isRTL) {
+			cancelButtonWidth += urlField.frame.origin.x;
+		} else {
+			cancelButtonWidth += self.view.frame.size.width - urlField.frame.origin.x - urlField.frame.size.width;
+		}
+
+		[navigationBar addConstraint:[NSLayoutConstraint constraintWithItem:bookmarksCancelButton
+																  attribute:NSLayoutAttributeWidth
+																  relatedBy:NSLayoutRelationEqual
+																	 toItem:nil
+																  attribute:NSLayoutAttributeNotAnAttribute
+																 multiplier:1.0f
+																   constant:cancelButtonWidth]];
+
+		[navigationBar addConstraint:[NSLayoutConstraint constraintWithItem:bookmarksCancelButton
+																  attribute:NSLayoutAttributeHeight
+																  relatedBy:NSLayoutRelationEqual
+																	 toItem:urlField
+																  attribute:NSLayoutAttributeHeight
+																 multiplier:1.0f
+																   constant:0.f]];
+
+		[navigationBar addConstraint:[NSLayoutConstraint constraintWithItem:bookmarksCancelButton
+																  attribute:NSLayoutAttributeCenterY
+																  relatedBy:NSLayoutRelationEqual
+																	 toItem:urlField
+																  attribute:NSLayoutAttributeCenterY
+																 multiplier:1.0f
+																   constant:0.f]];
+	}
+
+	// perform layout so we don't animate previous layout changes
+	[self.view layoutIfNeeded];
 
 	[UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
 		[urlField setTextAlignment:NSTextAlignmentNatural];
@@ -988,6 +1131,10 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	}];
 
 	[self updateSearchBarDetails];
+}
+
+- (void)dismissEmbeddedBookmarksView {
+	[urlField resignFirstResponder]; // end editing
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
@@ -1002,6 +1149,11 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 		[[bookmarks view] removeFromSuperview];
 		[bookmarks removeFromParentViewController];
 		bookmarks = nil;
+	}
+
+	if (bookmarksCancelButton != nil) {
+		[bookmarksCancelButton removeFromSuperview];
+		bookmarksCancelButton = nil;
 	}
 
 	[UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
@@ -1086,21 +1238,6 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	if(contentOffsetY + scrollViewHeight < scrollContentSizeHeight) {
 		self->currentWebViewScrollOffsetY = contentOffsetY;
 	}
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-	if (scrollView != tabScroller)
-		return;
-
-	int page = round(scrollView.contentOffset.x / scrollView.frame.size.width);
-	if (page < 0) {
-		page = 0;
-	}
-	else if (page > tabChooser.numberOfPages) {
-		page = (int)tabChooser.numberOfPages;
-	}
-	[self setCurTabIndex:page];
 }
 
 - (void)goBack:(id)_id
@@ -1376,6 +1513,40 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	[self presentViewController:navController animated:YES completion:nil];
 }
 
+- (void)tappedOnNavBar:(UITapGestureRecognizer *)gesture
+{
+	CGPoint point = [gesture locationInView:navigationBar];
+
+	// Make targets vertically flush with the navigation bar
+	// and fuzz slightly horizontally for easier interaction.
+
+	CGRect connectionIndicatorTarget = CGRectMake(isRTL ? urlField.frame.origin.x + urlField.frame.size.width : 0, 0, isRTL ? navigationBar.frame.size.width - (urlField.frame.origin.x + urlField.frame.size.width) : urlField.frame.origin.x, navigationBar.frame.size.height);
+
+	CGRect lockTarget = CGRectZero;
+	if (urlField.leftView != nil) {
+		CGRect lockFrame = [urlField convertRect:urlField.leftView.frame toView:navigationBar];
+		lockTarget = CGRectMake(lockFrame.origin.x, 0, lockFrame.size.width, navigationBar.frame.size.height);
+	}
+
+	CGRect refreshTarget = CGRectZero;
+	if (urlField.rightView != nil) {
+		CGRect refreshFrame = [urlField convertRect:urlField.rightView.frame toView:navigationBar];
+		refreshTarget = CGRectMake(isRTL ? 0 : refreshFrame.origin.x - 15, 0, isRTL ? refreshFrame.origin.x + refreshFrame.size.width + 15 : navigationBar.frame.size.width - refreshFrame.origin.x + 15, navigationBar.frame.size.height);
+	}
+
+	CGRect urlFieldTarget = CGRectMake(urlField.frame.origin.x, 0, navigationBar.frame.size.width - urlField.frame.origin.x, navigationBar.frame.size.height);
+
+	if (CGRectContainsPoint(connectionIndicatorTarget, point)) {
+		[self showPsiphonConnectionStatusAlert];
+	} else if (CGRectContainsPoint(lockTarget, point)) {
+		[self showSSLCertificate];
+	} else if (CGRectContainsPoint(refreshTarget, point)) {
+		[self forceRefresh];
+	} else if (CGRectContainsPoint(urlFieldTarget, point)) {
+		[urlField becomeFirstResponder];
+	}
+}
+
 - (void)tappedOnPageControlDot:(id)sender {
 	UIPageControl *pager = sender;
 	NSInteger page = pager.currentPage;
@@ -1400,8 +1571,9 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	CGPoint point = [gesture locationInView:self.curWebViewTab.viewHolder];
 
 	/* fuzz a bit to make it easier to tap */
-	int fuzz = 8;
+	int fuzz = 40;
 	CGRect closerFrame = CGRectMake(self.curWebViewTab.closer.frame.origin.x - fuzz, self.curWebViewTab.closer.frame.origin.y - fuzz, self.curWebViewTab.closer.frame.size.width + (fuzz * 2), self.curWebViewTab.closer.frame.size.width + (fuzz * 2));
+
 	if (CGRectContainsPoint(closerFrame, point)) {
 		[self removeTab:[NSNumber numberWithLong:curTabIndex]];
 	}
@@ -1484,103 +1656,76 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 }
 
 #pragma mark - Tutorial Delegate Methods
-// Draw the next tutorial step
-// Add constraints and draw spotlight
--(BOOL)drawStep:(int)step
-{
-	[self drawSpotlight:step];
 
-	[self.view removeConstraints:tutorial.removeBeforeNextStep];
-
-	if (step == PsiphonTutorialStep1) {
-		/* Hello from Psiphon. Also, highlight and describe psiphonConnectionIndicator */
-
-		NSDictionary *metrics = @{ @"arrowHeight":[NSNumber numberWithFloat: tutorial.arrowView.image.size.height] };
-
-		// Verticaly constrain arrowView to be centered to psiphonConnectionIndicator
-		tutorial.removeBeforeNextStep = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[psiphonConnectionIndicator]-30-[arrowView(==arrowHeight)]" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:tutorial.viewsDictionary];
-
-		[self.view addConstraints:tutorial.removeBeforeNextStep];
-
-		// Start arrow animation
-		[tutorial animateArrow:CGAffineTransformMakeTranslation(0.0, 20.0)];
-
-		return YES;
-	} else if (step == PsiphonTutorialStep2) {
-		[tutorial.headerView removeFromSuperview];
-
-		// If we are not using iPad need to change alignment from
-		// textView.top = contentView.centerY
-		// to
-		// textView.centerY = contentView.centerY
-		if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-			NSLayoutConstraint *centreTextView = [tutorial.constraintsDictionary valueForKey:@"centreTextView"];
-			if (centreTextView != nil) {
-				[tutorial.contentView removeConstraint:centreTextView];
-				centreTextView = [NSLayoutConstraint constraintWithItem:tutorial.textView
-															  attribute: NSLayoutAttributeCenterY
-															  relatedBy:NSLayoutRelationEqual
-																 toItem:tutorial.contentView
-															  attribute:NSLayoutAttributeCenterY
-															 multiplier:1.f constant:0.f];
-				centreTextView.constant = 10;
-				[tutorial.contentView addConstraint:centreTextView];
-			}
-		}
-
-		/* Highlight settings button and describe settings menu */
-
-		tutorial.arrowView.image = [UIImage imageNamed:@"arrow-down"];
-		NSDictionary *metrics = @{ @"arrowHeight":[NSNumber numberWithFloat: tutorial.arrowView.image.size.height] };
-
-		// Vertically constrain arrowView to be placed above the settings button spotlight
-		tutorial.removeBeforeNextStep = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[arrowView(==arrowHeight)]-50-[bottomToolBar]" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:tutorial.viewsDictionary];
-
-		// Vertically constrain the textView to be above arrowView to prevent unwanted overlap or cutoff
-		tutorial.removeBeforeNextStep = [tutorial.removeBeforeNextStep arrayByAddingObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[textView]-(>=0)-[arrowView]" options:0 metrics:nil views:tutorial.viewsDictionary]];
-
-		[self.view addConstraints:tutorial.removeBeforeNextStep];
-
-		return YES;
-	} else if (step == PsiphonTutorialStep3) {
-		/* Tutorial goodbye with no spotlight */
-
-		[tutorial.arrowView removeFromSuperview]; // arrowView not used on this screen
-		[tutorial.contentView addSubview:tutorial.letsGo]; // add letsGo button
-
-		if (tutorial.letsGo != nil) {
-			CGFloat buttonWidth = (tutorial.contentView.frame.size.width) / 3;
-			buttonWidth = buttonWidth > 120 ? buttonWidth : 120;
-			CGFloat buttonHeight = 40;
-
-			NSDictionary *metrics = @{
-									  @"buttonWidth": [NSNumber numberWithFloat:buttonWidth],
-									  @"buttonHeight": [NSNumber numberWithFloat:buttonHeight]
-									  };
-
-			// Horizontal constraints for letsGo button
-			[tutorial.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[letsGo(==buttonWidth)]" options:0 metrics:metrics views:tutorial.viewsDictionary]];
-			[tutorial.letsGo.layer setCornerRadius:buttonHeight/2];
-
-			// textView to letsGo button vertical spacing
-			tutorial.removeBeforeNextStep = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[textView]-32-[letsGo(==buttonHeight)]" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:tutorial.viewsDictionary];
-
-			[tutorial.contentView addConstraints:tutorial.removeBeforeNextStep];
-		}
-
-		return YES;
-	}
-
-	return NO;
+- (CGRect)getBottomToolbarFrame {
+	return [self.view convertRect:bottomToolBar.frame toView:self.view];;
 }
 
--(void)tutorialEnded
+- (CGRect)getConnectionIndicatorFrame {
+	return [self.view convertRect:psiphonConnectionIndicator.frame fromView:navigationBar];
+}
+
+- (CGRect)getCurrentSpotlightFrame:(NSUInteger)page
 {
+	int radius = psiphonConnectionIndicator.frame.size.width * 1.2;
+
+	if (page == PsiphonTutorialPage1Index) {
+		return CGRectMake(psiphonConnectionIndicator.frame.origin.x - (radius - psiphonConnectionIndicator.frame.size.width / 2), psiphonConnectionIndicator.frame.origin.y + navigationBar.frame.origin.y - (radius - psiphonConnectionIndicator.frame.size.height / 2), radius * 2.0, radius * 2.0);
+	} else if (page == PsiphonTutorialPage2Index) {
+		return CGRectMake(bottomToolBar.frame.size.width / 2 - radius, self.view.frame.size.height - bottomToolBar.frame.size.height / 2 - radius, radius * 2.0, radius * 2.0);
+	}
+	return CGRectNull;
+}
+
+- (CGRect)getSkipButtonFrame {
+	return [navigationBar convertRect:urlField.frame toView:self.view];
+}
+
+- (void)moveToStep:(NSInteger)step {
+	// Stop cycling connection indicator
+	[self resetConnectionStateCycler];
+
+	if (step == PsiphonTutorialPage1Index) {
+		/* Tutorial highlights psiphon connection indicator */
+		// Reset indicator state
+		[self cycleConnectionStateForTutorial];
+		// Cycle connection indicator to show user different connection states
+		tutorial.connectionStateCycler = [NSTimer scheduledTimerWithTimeInterval:1.4
+																		  target:self
+																		selector:@selector(cycleConnectionStateForTutorial)
+																		userInfo:nil
+																		 repeats:YES];
+	} else if (step == PsiphonTutorialPage2Index) {
+		/* Tutorial highlights settings button */
+	} else if (step == PsiphonTutorialPage3Index) {
+		/* Tutorial goodbye with no spotlight */
+	} else if (step >= PsiphonTutorialPageFinalIndex) {
+		[self tutorialEnded];
+	}
+}
+
+- (void)tutorialEnded
+{
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	if (![userDefaults boolForKey:kHasBeenOnboardedKey]) {
+		[Bookmark addDefaultBookmarks];
+		[[UIApplication sharedApplication] setStatusBarHidden:NO]; // Exit full screen
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kHasBeenOnboardedKey];
+	}
+
+	self.showTutorial = NO;
+
+	// Remove from view
+	[tutorial.view removeFromSuperview];
+	[tutorial removeFromParentViewController];
+	[tutorial didMoveToParentViewController:nil];
+
+	// Stop cycling connection indicator if tutorial was skipped
+	[self resetConnectionStateCycler];
 	tutorial = nil;
+
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center addObserver:self selector:@selector(psiphonConnectionStateNotified:) name:kPsiphonConnectionStateNotification object:nil];
-	[center removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
-	[center removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
 
 	// Since we have modified the psiphonConnectionIndicator's state manually for the tutorial
 	// we need to ensure it gets reset to display the correct state
@@ -1598,292 +1743,82 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 
 #pragma mark - Tutorial methods and helper functions
 
-- (void)viewDidLayoutSubviews
-{
-	if (tutorial != nil) {
-		[self drawSpotlight:tutorial.step];
+- (void)resetConnectionStateCycler {
+	if (tutorial != nil && tutorial.connectionStateCycler != nil) {
+		[tutorial.connectionStateCycler invalidate];
+		tutorial.connectionStateCycler = nil;
 	}
+	[psiphonConnectionIndicator displayConnectionState:ConnectionStateConnected];
 }
 
-- (void)drawSpotlight:(int)step
-{
-	CGRect frame = [self getCurrentSpotlightFrame:step];
-	[self wrappedTutorialCall:^(void){ [tutorial setSpotlightFrame:frame withView:self.view]; }];
-}
+- (void)cycleConnectionStateForTutorial {
+	static NSInteger state = 0;
 
-- (CGRect)getCurrentSpotlightFrame:(int)step
-{
-	int radius = psiphonConnectionIndicator.frame.size.width * 1.2;
-
-	if (step == 0) {
-		return CGRectMake(psiphonConnectionIndicator.frame.origin.x - (radius - psiphonConnectionIndicator.frame.size.width / 2), psiphonConnectionIndicator.frame.origin.y + navigationBar.frame.origin.y - (radius - psiphonConnectionIndicator.frame.size.height / 2), radius * 2.0, radius * 2.0);
-	} else if (step == 1) {
-		return CGRectMake(bottomToolBar.frame.size.width / 2 - radius, self.view.frame.size.height - bottomToolBar.frame.size.height / 2 - radius, radius * 2.0, radius * 2.0);
+	// Timer will be created or restarted
+	if (tutorial != nil && tutorial.connectionStateCycler == nil) {
+		state = 0;
 	}
-	return CGRectNull;
-}
 
-- (void)handleTutorialClick:(UITapGestureRecognizer *)recognizer {
-	[self wrappedTutorialCall:^(void){ [tutorial nextStep]; }];
-}
-
-- (void)wrappedTutorialCall:(void (^)())f{
-	if (tutorial != nil) {
-		f();
+	// Connection indicator will start on the disconnected state
+	switch (state % 3) {
+		case 0:
+			[psiphonConnectionIndicator displayConnectionState:ConnectionStateDisconnected];
+			break;
+		case 1:
+			[psiphonConnectionIndicator displayConnectionState:ConnectionStateConnecting];
+			break;
+		case 2:
+			[psiphonConnectionIndicator displayConnectionState:ConnectionStateConnected];
+			break;
+		default:
+			break;
 	}
+	state += 1;
 }
 
--(void)tutorialBackgrounded {
-	[tutorial.arrowView.layer removeAllAnimations];
-}
-
--(void)tutorialReappeared {
-	[tutorial animateArrow:CGAffineTransformMakeTranslation(0.0, 20.0)];
-}
-
--(void)overlayTutorial
+- (void)overlayTutorial
 {
 	// Unsubscribe from psiphonConnectionState notifications
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center removeObserver:self name:kPsiphonConnectionStateNotification object:nil];
 
-	// We need to stop and start animations on app backgrounded and app became active
-	[center addObserver:self selector:@selector(tutorialBackgrounded) name:UIApplicationDidEnterBackgroundNotification object:nil];
-	[center addObserver:self selector:@selector(tutorialReappeared) name:UIApplicationDidBecomeActiveNotification object:nil];
+	// Init tutorial
+	tutorial = [[TutorialViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+	tutorial.webViewController = self;
 
-	// Force connectionIndicator to show connected state
-	[psiphonConnectionIndicator displayConnectionState:ConnectionStateConnected];
+	[self addChildViewController:tutorial];
+	[self.view addSubview:tutorial.view];
+	[tutorial didMoveToParentViewController:self];
 
-	// Init
-	tutorial = [[Tutorial alloc] init];
-	tutorial.delegate = self;
-
-	/* Add completely clear background which prevents user clicking around */
-	// We will not add any subviews to this view as we need to
-	// layout against browser elements.
-	tutorial.blockingView = [[UIView alloc] initWithFrame:self.view.bounds];
-	tutorial.blockingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight; // If this doesn't auto-resize on rotate we'll be able to click through
-	tutorial.blockingView.backgroundColor = [UIColor clearColor];
-	[self.view addSubview:tutorial.blockingView];
-
-	// Created centred contentView which will hold tutorial
-	// headerView, titleView and textView.
-	tutorial.contentView = [[UIView alloc] init];
-	tutorial.contentView.translatesAutoresizingMaskIntoConstraints = NO;
-	tutorial.contentView.backgroundColor = [UIColor clearColor];
-
-	/* Add tutorial views to self.view */
-	[tutorial addToView:self.view];
-
-	/* contentView's constraints */
-
-	CGFloat contentViewWidthRatio = 0.68f;
-
-	// contentView.width = contentViewWidthRatio * self.view.width
-	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.contentView
-														  attribute:NSLayoutAttributeWidth
+	// Setup constraints
+	tutorial.view.translatesAutoresizingMaskIntoConstraints = NO;
+	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.view
+														  attribute:NSLayoutAttributeLeft
 														  relatedBy:NSLayoutRelationEqual
 															 toItem:self.view
-														  attribute:NSLayoutAttributeWidth
-														 multiplier:contentViewWidthRatio
-														   constant:0]];
-
-	// contentView.height = self.view.height
-	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.contentView
-														  attribute:NSLayoutAttributeHeight
-														  relatedBy:NSLayoutRelationEqual
-															 toItem:self.view
-														  attribute:NSLayoutAttributeHeight
-														 multiplier:.5f
-														   constant:0]];
-
-	// contentView.centerX = self.view.centerX
-	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.contentView
-														  attribute:NSLayoutAttributeCenterX
-														  relatedBy:NSLayoutRelationEqual
-															 toItem:self.view
-														  attribute:NSLayoutAttributeCenterX
+														  attribute:NSLayoutAttributeLeft
 														 multiplier:1.f constant:0.f]];
-
-	// contentView.centerY = self.view.centerY (low-priority)
-	NSLayoutConstraint *contentViewCentreY = [NSLayoutConstraint constraintWithItem:tutorial.contentView
-																		  attribute:NSLayoutAttributeCenterY
-																		  relatedBy:NSLayoutRelationEqual
-																			 toItem:self.view
-																		  attribute:NSLayoutAttributeCenterY
-																		 multiplier:1.f constant:0.f];
-	contentViewCentreY.priority = 10;
-	[self.view addConstraint:contentViewCentreY];
-
-	id <UILayoutSupport> topLayoutGuide =  self.topLayoutGuide;
-
-	[tutorial constructViewsDictionaryForAutoLayout:NSDictionaryOfVariableBindings(topLayoutGuide, psiphonConnectionIndicator, bottomToolBar)];
-
-	/* skipButton constraints */
-	[tutorial.skipButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[skipButton]-30-|" options:0 metrics:nil views:tutorial.viewsDictionary]];
-	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[skipButton]-(>=0)-[headerView]" options:0 metrics:nil views:tutorial.viewsDictionary]];
-
-	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.skipButton
-														  attribute:NSLayoutAttributeWidth
+	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.view
+														  attribute:NSLayoutAttributeRight
 														  relatedBy:NSLayoutRelationEqual
 															 toItem:self.view
-														  attribute:NSLayoutAttributeWidth
-														 multiplier:.35f
-														   constant:0]];
-
-	// Centre skip button vertically in nav bar
-	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.skipButton
-														  attribute:NSLayoutAttributeCenterY
-														  relatedBy:NSLayoutRelationEqual
-															 toItem:navigationBar
-														  attribute:NSLayoutAttributeCenterY
+														  attribute:NSLayoutAttributeRight
 														 multiplier:1.f constant:0.f]];
-
-	/* Add constraints to contentViews's subviews */
-
-	/* headerView's constraints */
-
-	// headerView.top = contentView.top (low-priority)
-	NSLayoutConstraint *headerViewToTop = [NSLayoutConstraint constraintWithItem:tutorial.headerView
-																	   attribute:NSLayoutAttributeTop
-																	   relatedBy:NSLayoutRelationEqual
-																		  toItem:tutorial.contentView
-																	   attribute:NSLayoutAttributeTop
-																	  multiplier:1.f constant:0.f];
-	headerViewToTop.priority = 10;
-	[tutorial.contentView addConstraint:headerViewToTop];
-
-	// headerView.centerX = contentView.centerX
-	[tutorial.contentView addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.headerView
-																	 attribute:NSLayoutAttributeCenterX
-																	 relatedBy:NSLayoutRelationEqual
-																		toItem:tutorial.contentView
-																	 attribute:NSLayoutAttributeCenterX
-																	multiplier:1.f constant:0.f]];
-
-	// headerView.width = contentView.width
-	[tutorial.contentView addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.headerView
-																	 attribute:NSLayoutAttributeWidth
-																	 relatedBy:NSLayoutRelationEqual
-																		toItem:tutorial.contentView
-																	 attribute:NSLayoutAttributeWidth
-																	multiplier:1.f
-																	  constant:0]];
-
-	// headerView.height <= 0.25 * contentView.height
-	[tutorial.contentView addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.headerView
-																	 attribute:NSLayoutAttributeHeight
-																	 relatedBy:NSLayoutRelationLessThanOrEqual
-																		toItem:tutorial.contentView
-																	 attribute:NSLayoutAttributeHeight
-																	multiplier:.25f
-																	  constant:0]];
-
-	tutorial.headerView.preferredMaxLayoutWidth = self.view.frame.size.width * contentViewWidthRatio;
-	[tutorial.headerView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-	[tutorial.headerView setContentCompressionResistancePriority:999 forAxis:UILayoutConstraintAxisVertical];
-
-	/* titleView's constraints */
-
-	// titleView.centerX = contentView.centerX
-	[tutorial.contentView addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.titleView
-																	 attribute:NSLayoutAttributeCenterX
-																	 relatedBy:NSLayoutRelationEqual
-																		toItem:tutorial.contentView
-																	 attribute:NSLayoutAttributeCenterX
-																	multiplier:1.f constant:0.f]];
-
-	// titleView.width = contentView.width
-	[tutorial.contentView addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.titleView
-																	 attribute:NSLayoutAttributeWidth
-																	 relatedBy:NSLayoutRelationEqual
-																		toItem:tutorial.contentView
-																	 attribute:NSLayoutAttributeWidth
-																	multiplier:1.f
-																	  constant:0]];
-
-	// titlteView.height <= 0.15 * contentView.height
-	[tutorial.contentView addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.titleView
-																	 attribute:NSLayoutAttributeHeight
-																	 relatedBy:NSLayoutRelationLessThanOrEqual
-																		toItem:tutorial.contentView
-																	 attribute:NSLayoutAttributeHeight
-																	multiplier:.15f
-																	  constant:0]];
-
-	tutorial.titleView.preferredMaxLayoutWidth = self.view.frame.size.width * contentViewWidthRatio;
-	[tutorial.titleView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-	[tutorial.titleView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-
-	/* textView's constraints */
-
-	CGFloat textViewWidthRatio = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? .8f : 1.f;
-
-	// textView.centerX = contentView.centerX
-	[tutorial.contentView addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.textView
-																	 attribute:NSLayoutAttributeCenterX
-																	 relatedBy:NSLayoutRelationEqual
-																		toItem:tutorial.contentView
-																	 attribute:NSLayoutAttributeCenterX
-																	multiplier:1.f constant:0.f]];
-
-	// textView.width = textViewWidthRatio * contentView.width
-	[tutorial.contentView addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.textView
-																	 attribute:NSLayoutAttributeWidth
-																	 relatedBy:NSLayoutRelationEqual
-																		toItem:tutorial.contentView
-																	 attribute:NSLayoutAttributeWidth
-																	multiplier:textViewWidthRatio
-																	  constant:0]];
-
-	// textView.top = contentView.centerX
-	NSLayoutConstraint *centreTextView = [NSLayoutConstraint constraintWithItem:tutorial.textView
-																	  attribute:UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? NSLayoutAttributeCenterY : NSLayoutAttributeTop
-																	  relatedBy:NSLayoutRelationEqual
-																		 toItem:tutorial.contentView
-																	  attribute:NSLayoutAttributeCenterY
-																	 multiplier:1.f constant:0.f];
-	centreTextView.priority = 15; // we'll need to break this constraint on smaller screens
-	[tutorial.contentView addConstraint:centreTextView];
-
-	tutorial.textView.preferredMaxLayoutWidth = self.view.frame.size.width * contentViewWidthRatio * textViewWidthRatio;
-	[tutorial.textView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-	[tutorial.textView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-
-	// textView.height <= 0.6 * contentView.height
-	[tutorial.contentView addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.textView
-																	 attribute:NSLayoutAttributeHeight
-																	 relatedBy:NSLayoutRelationLessThanOrEqual
-																		toItem:tutorial.contentView
-																	 attribute:NSLayoutAttributeHeight
-																	multiplier:.6f
-																	  constant:0]];
-
-	/* Construct constraints dictionary */
-	tutorial.constraintsDictionary = [[NSMutableDictionary alloc] init];
-	[tutorial.constraintsDictionary addEntriesFromDictionary:NSDictionaryOfVariableBindings(centreTextView)];
-
-	// Vertical constraints for contentView's subviews
-	[tutorial.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[headerView]-(>=24)-[titleView]-(==24)-[textView]-(>=0)-|" options:0 metrics:nil views:tutorial.viewsDictionary]];
-
-	/* Start tutorial */
-	[tutorial startTutorial];
-
-	UITapGestureRecognizer *tutorialBlockingViewPress =
-	[[UITapGestureRecognizer alloc] initWithTarget:self
-											action:@selector(handleTutorialClick:)];
-
-	[tutorial.blockingView addGestureRecognizer:tutorialBlockingViewPress];
-
-	UITapGestureRecognizer *tutorialContentViewPress =
-	[[UITapGestureRecognizer alloc] initWithTarget:self
-											action:@selector(handleTutorialClick:)];
-
-	[tutorial.contentView addGestureRecognizer:tutorialContentViewPress];
+	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.view
+														  attribute:NSLayoutAttributeTop
+														  relatedBy:NSLayoutRelationEqual
+															 toItem:self.view
+														  attribute:NSLayoutAttributeTop
+														 multiplier:1.f constant:0.f]];
+	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:tutorial.view
+														  attribute:NSLayoutAttributeBottom
+														  relatedBy:NSLayoutRelationEqual
+															 toItem:self.view
+														  attribute:NSLayoutAttributeBottom
+														 multiplier:1.f constant:0.f]];
 }
 
-- (void) showPsiphonConnectionStatusAlert {
+- (void)showPsiphonConnectionStatusAlert {
 	PsiphonConnectionAlertViewController *connectionAlertViewController = [[PsiphonConnectionAlertViewController alloc]
 																		   initWithState:[[AppDelegate sharedAppDelegate] getConnectionState]];
 	connectionAlertViewController.delegate = self;
@@ -1949,10 +1884,12 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 						// Moved enough to change page (go right), and there is at least 1 page on the right
 						[tabChooser setCurrentPage:curTabIndex + 1];
 						curTabIndex += 1;
+						[self setCurTabIndex:curTabIndex];
 					} else if ((xDistance >= 100 || vel.x >= 300) && curTabIndex > 0) {
 						// Moved enough to change page (go left), and there is at least 1 page on the left
 						[tabChooser setCurrentPage:curTabIndex - 1];
 						curTabIndex -= 1;
+						[self setCurTabIndex:curTabIndex];
 					}
 
 					// If the page index wasn't changed, it will just scroll back to the page's original position

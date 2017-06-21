@@ -44,6 +44,7 @@
 /* Cancel
    Cancel action
    Cancel button on alert
+   Cancel button text which allows user to exit bookmarks view
    Text of button to discard feedback and return to main settings menu
    Text of cancel button on alert which will dismiss the popup */
 "Cancel" = "Cancel";
@@ -170,7 +171,7 @@
 "Learn more about the data we collect in our %@" = "Learn more about the data we collect in our %@";
 
 /* No comment provided by engineer. */
-"LET'S GO!" = "LET'S GO!";
+"Let's Go!" = "Let's Go!";
 
 /* Field name for display in list */
 "Locality" = "Locality";
@@ -192,6 +193,9 @@
 
 /* New browser tab title text */
 "New Tab" = "New Tab";
+
+/* Text of the button that the user presses to proceed to the next screen of onboarding */
+"Next" = "Next";
 
 /* Field name for display in list */
 "Object Identifier" = "Object Identifier";
@@ -289,8 +293,8 @@
 /* No comment provided by engineer. */
 "Spain" = "Spain";
 
-/* Text of button that user presses to complete onboarding */
-"Start Browsing" = "Start Browsing";
+/* Text of button that user presses to complete onboarding and start tutorial */
+"Start Tutorial" = "Start Tutorial";
 
 /* Field name for display in list */
 "State/Province" = "State/Province";
@@ -346,9 +350,6 @@
 
 /* Connection status initial splash modal dialog title for 'Waiting for network...' state */
 "Waiting for network..." = "Waiting for network...";
-
-/* No comment provided by engineer. */
-"Welcome! Here is how to use Psiphon" = "Welcome! Here is how to use Psiphon";
 
 /* Comments section placeholder text */
 "What's on your mind? Please leave us your feedback" = "What's on your mind? Please leave us your feedback";
