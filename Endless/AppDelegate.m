@@ -523,9 +523,9 @@
 				}
 			}
 		}
-	});
 
-	[self notifyConnectionState];
+		[self notifyConnectionState];
+	});
 }
 
 - (void)onDeviceInternetConnectivityInterrupted {

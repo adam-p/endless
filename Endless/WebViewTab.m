@@ -574,6 +574,8 @@
 	[m show];
 
 	[self webViewDidFinishLoad:__webView];
+
+	[[AppDelegate sharedAppDelegate] startPsiphonOnlyIfNeeded:YES];
 }
 
 - (void)webView:(UIWebView *)__webView callbackWith:(NSString *)callback
