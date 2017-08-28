@@ -22,11 +22,17 @@
 /* Image download error alert text. %@ will be replaced with the URL of the image. */
 "An error occurred downloading image %@" = "មានបញ្ហាកើតឡើងពេលកំពុងទាញយករូបភាព %@";
 
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Austria" = "Austria";
+
 /* HTTP authentication  alert title */
 "Authentication Required" = "ទាមទារការផ្ទៀងផ្ទាត់";
 
 /* Field name for display in list */
 "Begins On" = "Begins On";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Belgium" = "Belgium";
 
 /* The name of the pseudo-region a user can select if they want to use a Psiphon server with the best performance -- speed, latency, etc., rather than specify a particular region/country. This appears in a combo box and should be kept short. */
 "Best Performance" = "ដំណើរការល្អបំផុត";
@@ -37,6 +43,9 @@
 
 /* Title displayed at the top of all onboardings screens. This should be in all-caps if that makes sense in your language. This is a slogan and should be kept short and punchy. */
 "BROWSE BEYOND BORDERS" = "BROWSE BEYOND BORDERS";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Bulgaria" = "Bulgaria";
 
 /* Field name for display in list */
 "Business Category" = "ផ្នែកពាណិជ្ជកម្ម";
@@ -54,6 +63,9 @@
    Text of button to discard feedback and return to main settings menu
    Text of cancel button on alert which will dismiss the popup */
 "Cancel" = "បោះបង់";
+
+/* Text displayed on navigation bar reflecting file download state */
+"Cancelled" = "Cancelled";
 
 /* Field name for display in list */
 "Certificate Information" = "ព័ត៌មានវិញ្ញាបនប័ត្រ";
@@ -88,6 +100,12 @@
 /* Field name for display in list */
 "Country" = "Country";
 
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Czech Republic" = "Czech Republic";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Denmark" = "Denmark";
+
 /* Connection status initial splash modal dialog title for 'Psiphon can not start due to an internal error' state */
 "Disconnected!" = "ផ្តាច់ការតភ្ជាប់!";
 
@@ -117,7 +135,8 @@
 "Enter the details of the URL to bookmark:" = "បញ្ចូលអាសយដ្ឋានលម្អិតរបស់ URL ទៅកាន់ការចំណាំ៖";
 
 /* Alert dialog title when webpage has failed to load
-   Image download error alert title */
+   Image download error alert title
+   Text displayed on navigation bar reflecting file download state */
 "Error" = "បញ្ហា";
 
 /* Text preceeding error description */
@@ -128,6 +147,9 @@
 
 /* Field name for display in list */
 "Extended Validation: Organization" = "ពន្យាសុពលភាព៖ ស្ថាប័ន";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"France" = "France";
 
 /* FAQ link text */
 "Frequently Asked Questions" = "សំណួរសួរញឹកញាប់";
@@ -159,6 +181,9 @@
 /* External link to the privacy policy page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/privacy.html for french. */
 "https://psiphon.ca/en/privacy.html" = "https://psiphon.ca/en/privacy.html";
 
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Hungary" = "Hungary";
+
 /* Feedback footer text referring users to feedback email. %@ is where the separate translation for the email will be placed. */
 "If the above form is not working or you would like to send screenshots, please email us at %@" = "ប្រសិនបើទម្រង់ខាងលើមិនដំណើរការ ឬអ្នកចង់ផ្ញើរូបអេក្រង់ សូមផ្ញើអ៊ីម៉ែលមកកាន់យើង %@";
 
@@ -173,6 +198,9 @@
 
 /* Field name for display in list */
 "Issued To" = "ចេញផ្សាយទៅកាន់";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Italy" = "Italy";
 
 /* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
 "Japan" = "ជប៉ុន";
@@ -205,6 +233,9 @@
 /* No comment provided by engineer. */
 "Message Text View" = "បង្ហាញសារជាអក្សរ";
 
+/* Text of button on download preview screen which allows users to see what other actions they can perform with the file */
+"More..." = "More...";
+
 /* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
 "Netherlands" = "ហូឡង់";
 
@@ -213,6 +244,9 @@
 
 /* Text of the button that the user presses to proceed to the next screen of onboarding */
 "Next" = "Next";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Norway" = "Norway";
 
 /* Text on last tutorial screen which prompts the user to exit tutorial and start browsing with Psiphon Browser */
 "Now we'll connect to a Psiphon server so you can start browsing." = "Now we'll connect to a Psiphon server so you can start browsing.";
@@ -280,6 +314,9 @@
 /* Title of alert to clear local cookies and browsing data */
 "Remove all cookies and browsing data?" = "Remove all cookies and browsing data?";
 
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Romania" = "Romania";
+
 /* Title above a list of rules in use */
 "Rules in use on current page" = "ក្បួនក្នុងការប្រើប្រាស់ទំព័របច្ចុប្បន្ន";
 
@@ -336,6 +373,12 @@
 
 /* Image download success alert text. %@ will be replaced with the URL of the image. */
 "Successfully downloaded image %@" = "Successfully downloaded image %@";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Sweden" = "Sweden";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"Switzerland" = "Switzerland";
 
 /* Text on first tutorial screen which highlights the connection indicator */
 "The green checkmark indicates that Psiphon Browser is connected and ready for you to start browsing" = "The green checkmark indicates that Psiphon Browser is connected and ready for you to start browsing";
