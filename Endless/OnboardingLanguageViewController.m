@@ -154,7 +154,7 @@
 	// Setup language box header text
 	languageBoxHeader = [[UILabel alloc] init];
 	languageBoxHeader.adjustsFontSizeToFitWidth = YES;
-	languageBoxHeader.text = NSLocalizedString(@"Language", @"Title above language box which displays the current app language and all available languages that the app is localized for");
+	languageBoxHeader.text = NSLocalizedStringWithDefaultValue(@"LANGUAGE_SELECT_TITLE", nil, [NSBundle mainBundle], @"Language", @"Title above language box which displays the current app language and all available languages that the app is localized for");
 	languageBoxHeader.textAlignment = isRTL ? NSTextAlignmentRight : NSTextAlignmentLeft;
 	languageBoxHeader.font = [UIFont fontWithName:kLanguageBoxFont size:16.0f];
 	languageBoxHeader.translatesAutoresizingMaskIntoConstraints = NO;
@@ -304,7 +304,7 @@
 	nextButton = [[UIButton alloc] init];
 	nextButton.backgroundColor = [UIColor colorWithRed:0.83 green:0.25 blue:0.16 alpha:1.0];
 	nextButton.hidden = false;
-	[nextButton setTitle:NSLocalizedString(@"Next", @"Text of the button that the user presses to proceed to the next screen of onboarding") forState:UIControlStateNormal];
+	[nextButton setTitle:NSLocalizedStringWithDefaultValue(@"ONBOARDING_NEXT_BUTTON", nil, [NSBundle mainBundle], @"Next", @"Text of the button that the user presses to proceed to the next screen of onboarding") forState:UIControlStateNormal];
 	nextButton.layer.cornerRadius = knextButtonHeight / 2;
 	nextButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:(self.view.frame.size.width - 320) * 0.0112f + 16.0f];
 	nextButton.titleLabel.adjustsFontSizeToFitWidth = YES;

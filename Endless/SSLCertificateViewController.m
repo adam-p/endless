@@ -9,15 +9,15 @@
 
 @implementation SSLCertificateViewController
 
-#define CI_SIGALG_KEY NSLocalizedString(@"Signature Algorithm", @"Field name for display in list")
-#define CI_EVORG_KEY NSLocalizedString(@"Extended Validation: Organization", @"Field name for display in list")
+#define CI_SIGALG_KEY NSLocalizedStringWithDefaultValue(@"CERT_SIG_ALGO", nil, [NSBundle mainBundle], @"Signature Algorithm", @"Field name for display in list")
+#define CI_EVORG_KEY NSLocalizedStringWithDefaultValue(@"CERT_EV_ORG", nil, [NSBundle mainBundle], @"Extended Validation: Organization", @"Field name for display in list")
 
 - (id)initWithSSLCertificate:(SSLCertificate *)cert
 {
 	self = [super init];
 	[self setCertificate:cert];
 
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Done action button. dismisses SSL certificate information dialog") style:UIBarButtonItemStyleDone target:self.navigationController action:@selector(dismissModalViewControllerAnimated:)];
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"DONE_ACTION", nil, [NSBundle mainBundle], @"Done", @"Done action") style:UIBarButtonItemStyleDone target:self.navigationController action:@selector(dismissModalViewControllerAnimated:)];
 
 	certInfo = [[MutableOrderedDictionary alloc] init];
 
@@ -25,18 +25,18 @@
 
 	if ([cert negotiatedProtocol]) {
 		i = [[MutableOrderedDictionary alloc] init];
-		[i setObject:[cert negotiatedProtocolString] forKey:NSLocalizedString(@"Protocol", @"Field name for display in list")];
-		[i setObject:[cert negotiatedCipherString] forKey:NSLocalizedString(@"Cipher", @"Field name for display in list")];
-		[certInfo setObject:i forKey:NSLocalizedString(@"Connection Information", @"Field name for display in list")];
+		[i setObject:[cert negotiatedProtocolString] forKey:NSLocalizedStringWithDefaultValue(@"CERT_PROTOCOL", nil, [NSBundle mainBundle], @"Protocol", @"Field name for display in list")];
+		[i setObject:[cert negotiatedCipherString] forKey:NSLocalizedStringWithDefaultValue(@"CERT_CIPHER", nil, [NSBundle mainBundle], @"Cipher", @"Field name for display in list")];
+		[certInfo setObject:i forKey:NSLocalizedStringWithDefaultValue(@"CERT_CONNECTION_INFORMATION", nil, [NSBundle mainBundle], @"Connection Information", @"Field name for display in list")];
 	}
 
 	i = [[MutableOrderedDictionary alloc] init];
-	[i setObject:[NSString stringWithFormat:@"%@", [cert version]] forKey:NSLocalizedString(@"Version", @"Field name for display in list")];
-	[i setObject:[cert serialNumber] forKey:NSLocalizedString(@"Serial Number", @"Field name for display in list")];
+	[i setObject:[NSString stringWithFormat:@"%@", [cert version]] forKey:NSLocalizedStringWithDefaultValue(@"CERT_VERSION", nil, [NSBundle mainBundle], @"Version", @"Field name for display in list")];
+	[i setObject:[cert serialNumber] forKey:NSLocalizedStringWithDefaultValue(@"CERT_SERIAL_NUMBER", nil, [NSBundle mainBundle], @"Serial Number", @"Field name for display in list")];
 	[i setObject:[cert signatureAlgorithm] forKey:CI_SIGALG_KEY];
 	if ([cert isEV])
 		[i setObject:[cert evOrgName] forKey:CI_EVORG_KEY];
-	[certInfo setObject:i forKey:NSLocalizedString(@"Certificate Information", @"Field name for display in list")];
+	[certInfo setObject:i forKey:NSLocalizedStringWithDefaultValue(@"CERT_CERTIFICATE_INFORMATION", nil, [NSBundle mainBundle], @"Certificate Information", @"Field name for display in list")];
 
 	NSDictionary<NSString*,NSString*> *localizedKeys = @{
 														 X509_KEY_CN:X509_KEY_CN_l10n,
@@ -65,16 +65,16 @@
 		NSString *localizedKey = (NSString*)[localizedKeys objectForKey:k];
 		[i setObject:[[cert subject] objectForKey:k] forKey:localizedKey != nil ? localizedKey : k];
 	}
-	[certInfo setObject:i forKey:NSLocalizedString(@"Issued To", @"Field name for display in list")];
+	[certInfo setObject:i forKey:NSLocalizedStringWithDefaultValue(@"CERT_ISSUED_TO", nil, [NSBundle mainBundle], @"Issued To", @"Field name for display in list")];
 
 	NSDateFormatter *df_local = [[NSDateFormatter alloc] init];
 	[df_local setTimeZone:[NSTimeZone defaultTimeZone]];
-	[df_local setDateFormat:[NSString stringWithFormat:@"%@", NSLocalizedString(@"yyyy-MM-dd 'at' HH:mm:ss zzz", "This string will end up as '<date> 'at' <time>'. For example 2016-03-01 at 19:00:00 EST. Only 'at' should be translated with apostrophes preserved and the date and time strings placed where appropriate.")]];
+	[df_local setDateFormat:[NSString stringWithFormat:@"%@", NSLocalizedStringWithDefaultValue(@"CERT_DATE_TIME", nil, [NSBundle mainBundle], @"yyyy-MM-dd 'at' HH:mm:ss zzz", "This string will end up as '<date> 'at' <time>'. For example 2016-03-01 at 19:00:00 EST. Only 'at' should be translated with apostrophes preserved and the date and time strings placed where appropriate.")]];
 
 	i = [[MutableOrderedDictionary alloc] init];
-	[i setObject:[df_local stringFromDate:[cert validityNotBefore]] forKey:NSLocalizedString(@"Begins On", @"Field name for display in list")];
-	[i setObject:[df_local stringFromDate:[cert validityNotAfter]] forKey:NSLocalizedString(@"Expires After", @"Field name for display in list")];
-	[certInfo setObject:i forKey:NSLocalizedString(@"Period of Validity", @"Field name for display in list")];
+	[i setObject:[df_local stringFromDate:[cert validityNotBefore]] forKey:NSLocalizedStringWithDefaultValue(@"CERT_BEGINS_ON", nil, [NSBundle mainBundle], @"Begins On", @"Field name for display in list")];
+	[i setObject:[df_local stringFromDate:[cert validityNotAfter]] forKey:NSLocalizedStringWithDefaultValue(@"CERT_EXPIRES_AFTER", nil, [NSBundle mainBundle], @"Expires After", @"Field name for display in list")];
+	[certInfo setObject:i forKey:NSLocalizedStringWithDefaultValue(@"CERT_PERIOD_OF_VALIDITY", nil, [NSBundle mainBundle], @"Period of Validity", @"Field name for display in list")];
 
 	i = [[MutableOrderedDictionary alloc] init];
 
@@ -90,7 +90,7 @@
 		NSString *localizedKey = (NSString*)[localizedKeys objectForKey:k];
 		[i setObject:[[cert issuer] objectForKey:k] forKey:localizedKey != nil ? localizedKey : k];
 	}
-	[certInfo setObject:i forKey:NSLocalizedString(@"Issued By", @"Field name for display in list")];
+	[certInfo setObject:i forKey:NSLocalizedStringWithDefaultValue(@"CERT_ISSUED_BY", nil, [NSBundle mainBundle], @"Issued By", @"Field name for display in list")];
 
 	return self;
 }

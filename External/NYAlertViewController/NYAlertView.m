@@ -170,7 +170,7 @@
 		self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
 		self.titleLabel.textAlignment = NSTextAlignmentCenter;
 		self.titleLabel.textColor = [UIColor blackColor];
-		self.titleLabel.text = NSLocalizedString(@"Title Label", nil);
+		self.titleLabel.text = NSLocalizedStringWithDefaultValue(@"NYALERT_TITLE", nil, [NSBundle mainBundle], @"Title Label", nil);
 		[self.alertBackgroundView addSubview:self.titleLabel];
 
 		_messageTextView = [[NYAlertTextView alloc] initWithFrame:CGRectZero];
@@ -182,7 +182,7 @@
 		self.messageTextView.textAlignment = NSTextAlignmentCenter;
 		self.messageTextView.textColor = [UIColor blackColor];
 		self.messageTextView.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-		self.messageTextView.text = NSLocalizedString(@"Message Text View", nil);
+		self.messageTextView.text = NSLocalizedStringWithDefaultValue(@"NYALERT_TEXT", nil, [NSBundle mainBundle], @"Message Text View", nil);
 		[self.alertBackgroundView addSubview:self.messageTextView];
 
 		_contentViewContainerView = [[UIView alloc] initWithFrame:CGRectZero];

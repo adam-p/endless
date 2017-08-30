@@ -54,8 +54,8 @@
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 
 		// Localized text
-		_thumbsUpText = NSLocalizedString(@"Psiphon connects\nand performs the\nway I want it to.", @"Text explaining thumbs up choice in feedback");
-		_thumbsDownText = NSLocalizedString(@"Psiphon often fails\nto connect or\ndoesn't perform well\nenough." , @"Text explaining thumbs down choice in feedback");
+		_thumbsUpText = NSLocalizedStringWithDefaultValue(@"FEEDBACK_THUMBS_UP_TEXT", nil, [NSBundle mainBundle], @"Psiphon connects\nand performs the\nway I want it to.", @"Text explaining thumbs up choice in feedback");
+		_thumbsDownText = NSLocalizedStringWithDefaultValue(@"FEEDBACK_THUMBS_DOWN_TEXT", nil, [NSBundle mainBundle], @"Psiphon often fails\nto connect or\ndoesn't perform well\nenough." , @"Text explaining thumbs down choice in feedback");
 
 		// Determine proper dimensions to fit image and localized text
 		_maxImageHeight = MAX([UIImage imageNamed:kThumbsDownColor].size.height, [UIImage imageNamed:kThumbsDownGrayscale].size.height);

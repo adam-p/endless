@@ -127,23 +127,23 @@ const int BOOKMARK_FILE_VERSION = 1;
 {
 	WebViewTab *wvt = [[[AppDelegate sharedAppDelegate] webViewController] curWebViewTab];
 
-	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Bookmark", @"'Add bookmark' dialog title")
-																			 message:NSLocalizedString(@"Enter the details of the URL to bookmark:", @"'Add bookmark' dialog text")
+	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"ADD_BOOKMARK_TITLE", nil, [NSBundle mainBundle], @"Add Bookmark", @"'Add bookmark' dialog title")
+																			 message:NSLocalizedStringWithDefaultValue(@"ADD_EDIT_BOOKMARK_TEXT", nil, [NSBundle mainBundle], @"Enter the details of the URL to bookmark:", @"'Add Bookmark' dialog text")
 																	  preferredStyle:UIAlertControllerStyleAlert];
 	[alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-		textField.placeholder = NSLocalizedString(@"URL", @"Add bookmark URL field");
+		textField.placeholder = NSLocalizedStringWithDefaultValue(@"ADD_EDIT_BOOKMARK_URL", nil, [NSBundle mainBundle], @"URL", @"Add bookmark URL field");
 
 		if (wvt && [wvt url])
 			textField.text = [[wvt url] absoluteString];
 	}];
 	[alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-		textField.placeholder = NSLocalizedString(@"Page Name (leave blank to use URL)", @"Add bookmark page name field");
+		textField.placeholder = NSLocalizedStringWithDefaultValue(@"ADD_EDIT_BOOKMARK_NAME", nil, [NSBundle mainBundle], @"Page Name (leave blank to use URL)", @"Add bookmark page name field");
 
 		if (wvt && [wvt url])
 			textField.text = [[wvt title] text];
 	}];
 
-	UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"OK action") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+	UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"OK_ACTION", nil, [NSBundle mainBundle], @"OK", @"OK action") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 		UITextField *url = alertController.textFields[0];
 		UITextField *name = alertController.textFields[1];
 
@@ -155,7 +155,7 @@ const int BOOKMARK_FILE_VERSION = 1;
 		}
 	}];
 
-	UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action") style:UIAlertActionStyleCancel handler:nil];
+	UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"CANCEL_ACTION", nil, [NSBundle mainBundle], @"Cancel", @"Cancel action") style:UIAlertActionStyleCancel handler:nil];
 	[alertController addAction:cancelAction];
 	[alertController addAction:okAction];
 

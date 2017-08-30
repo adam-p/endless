@@ -93,7 +93,7 @@
 	letsGoButton = [[UIButton alloc] init];
 	letsGoButton.backgroundColor = [UIColor colorWithRed:0.83 green:0.25 blue:0.16 alpha:1.0];
 	letsGoButton.hidden = false;
-	[letsGoButton setTitle:NSLocalizedString(@"Start Tutorial", @"Text of button that user presses to complete onboarding and start tutorial") forState:UIControlStateNormal];
+	[letsGoButton setTitle:NSLocalizedStringWithDefaultValue(@"START_TUTORIAL_BUTTON", nil, [NSBundle mainBundle], @"Start Tutorial", @"Text of button that user presses to complete onboarding and start tutorial") forState:UIControlStateNormal];
 	letsGoButton.titleLabel.textAlignment = NSTextAlignmentCenter;
 	letsGoButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:(self.view.frame.size.width - k5sScreenWidth) * 0.0112f + 16.0f];
 	letsGoButton.titleLabel.adjustsFontSizeToFitWidth = YES;
@@ -239,17 +239,17 @@
 	/* Set page specific content */
 	switch (self.index) {
 		case PsiphonOnboardingPage1Index: {
-			titleView.text = NSLocalizedString(@"Access the Web", @"Title text on one of the on-boarding screens");
-			textView.text = NSLocalizedString(@"The Internet at your fingertips", @"Body text on one of the on-boarding screens. It is indicating to the user that Psiphon Browser allows them to access the Internet (without censorship).");
+			titleView.text = NSLocalizedStringWithDefaultValue(@"ONBOARDING_ACCESS_TITLE", nil, [NSBundle mainBundle], @"Access the Web", @"Title text on one of the on-boarding screens");
+			textView.text = NSLocalizedStringWithDefaultValue(@"ONBOARDING_ACCESS_TEXT", nil, [NSBundle mainBundle], @"The Internet at your fingertips", @"Body text on one of the on-boarding screens. It is indicating to the user that Psiphon Browser allows them to access the Internet (without censorship).");
 			break;
 		}
 		case PsiphonOnboardingPage2Index: {
-			titleView.text = NSLocalizedString(@"Your Apps in Your Browser", @"Title text on one of the on-boarding screens. The intention of this screen is to let the user know that their sites and services -- Facebook, Twitter, etc. -- can be accessed within Psiphon Browser via web pages.");
-			textView.text =  NSLocalizedString(@"Your favorite apps have a web interface that works great in Psiphon Browser", @"Body text on one of the on-boarding screens. The intention of this screen is to let the user know that their sites and services -- Facebook, Twitter, etc. -- can be accessed within Psiphon Browser via web pages.");
+			titleView.text = NSLocalizedStringWithDefaultValue(@"ONBOARDING_APPS_TITLE", nil, [NSBundle mainBundle], @"Your Apps in Your Browser", @"Title text on one of the on-boarding screens. The intention of this screen is to let the user know that their sites and services -- Facebook, Twitter, etc. -- can be accessed within Psiphon Browser via web pages.");
+			textView.text =  NSLocalizedStringWithDefaultValue(@"ONBOARDING_APPS_TEXT", nil, [NSBundle mainBundle], @"Your favorite apps have a web interface that works great in Psiphon Browser", @"Body text on one of the on-boarding screens. The intention of this screen is to let the user know that their sites and services -- Facebook, Twitter, etc. -- can be accessed within Psiphon Browser via web pages.");
 			break;
 		}
 		case PsiphonOnboardingPage3Index: {
-			titleView.text = NSLocalizedString(@"Happy Browsing!", @"Title text on one of the on-boarding screens. This is the final page of the on-boarding and is sending the user off on their journey across the Internet.");
+			titleView.text = NSLocalizedStringWithDefaultValue(@"ONBOARDING_BROWSING_TITLE", nil, [NSBundle mainBundle], @"Happy Browsing!", @"Title text on one of the on-boarding screens. This is the final page of the on-boarding and is sending the user off on their journey across the Internet.");
 			textView.text = @"";
 
 			/* add letsGoButton to view */
@@ -290,11 +290,6 @@
 	if ([strongDelegate respondsToSelector:@selector(onboardingEnded)]) {
 		[strongDelegate onboardingEnded];
 	}
-}
-
-- (void)tempStrings {
-	NSString *temp = NSLocalizedString(@"Bypass Censorship", @"Title text on one of the on-boarding screens. It indicates to the user that Psiphon Browser's primary purpose is to get past censorship.");
-	temp = NSLocalizedString(@"If your favourite app is blocked, try their website in Psiphon Browser", @"Body text on one of the on-boarding screens. This intention of this text to let the user know that their sites and services -- Facebook, Twitter, etc. -- can be access within Psiphon Browser via web pages.");
 }
 
 @end

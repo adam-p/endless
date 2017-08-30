@@ -194,7 +194,7 @@
 
 - (void)setupSkipButton {
 	skipButton = [[UIButton alloc] init];
-	[skipButton setTitle:NSLocalizedString(@"SKIP TUTORIAL", @"") forState:UIControlStateNormal];
+	[skipButton setTitle:NSLocalizedStringWithDefaultValue(@"TUTORIAL_SKIP_BUTTON", nil, [NSBundle mainBundle], @"SKIP TUTORIAL", @"Text that can be clicked to skip the tutorial") forState:UIControlStateNormal];
 	[skipButton setTitleColor:[UIColor colorWithRed:0.56 green:0.57 blue:0.58 alpha:1.0] forState:UIControlStateNormal];
 	[skipButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:17.0f]];
 	[skipButton.titleLabel setAdjustsFontSizeToFitWidth:YES];

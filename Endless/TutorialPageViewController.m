@@ -272,7 +272,7 @@
 	letsGo = [[UIButton alloc] init];
 
 	[letsGo setBackgroundColor:[UIColor colorWithRed:0.83 green:0.25 blue:0.16 alpha:1.0]];
-	[letsGo setTitle:NSLocalizedString(@"Let's Go!", @"Final button in tutorial which user clicks to exit tutorial and start browsing with Psiphon Browser") forState:UIControlStateNormal];
+	[letsGo setTitle:NSLocalizedStringWithDefaultValue(@"TUTORIAL_GO_BUTTON", nil, [NSBundle mainBundle], @"Let's Go!", @"Final button in tutorial which user clicks to exit tutorial and start browsing with Psiphon Browser") forState:UIControlStateNormal];
 
 	[letsGo.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:(MAX(self.view.frame.size.width, self.view.frame.size.height) - k5sScreenHeight) * 0.0088f + 16.f]];
 	[letsGo.titleLabel setAdjustsFontSizeToFitWidth:YES];
@@ -287,9 +287,9 @@
 {
 	NSArray<NSString*>* titleText = @[
 									  @"",
-									  NSLocalizedString(@"Status Indicator", @"Title of first tutorial screen which highlights the connection indicator"),
-									  NSLocalizedString(@"Settings & Help", @"Title of second tutorial screen which highlights the settings button"),
-									  NSLocalizedString(@"Learning time is over", @"Title of third tutorial screen which prompts the user to exit tutorial and start browsing with Psiphon Browser")
+									  NSLocalizedStringWithDefaultValue(@"TUTORIAL_TITLE_STATUS", nil, [NSBundle mainBundle], @"Status Indicator", @"Title of first tutorial screen which highlights the connection indicator"),
+									  NSLocalizedStringWithDefaultValue(@"TUTORIAL_TITLE_SETTINGS", nil, [NSBundle mainBundle], @"Settings & Help", @"Title of second tutorial screen which highlights the settings button"),
+									  NSLocalizedStringWithDefaultValue(@"TUTORIAL_TITLE_FINAL", nil, [NSBundle mainBundle], @"Learning time is over", @"Title of third tutorial screen which prompts the user to exit tutorial and start browsing with Psiphon Browser")
 									  ];
 
 	if (self.index < titleText.count) {
@@ -306,13 +306,13 @@
 	NSAttributedString *attrStringWithImage = [NSAttributedString attributedStringWithAttachment:textAttachment];
 	[attributedString appendAttributedString:attrStringWithImage];
 	[attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
-	[attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"The green checkmark indicates that Psiphon Browser is connected and ready for you to start browsing", @"Text on first tutorial screen which highlights the connection indicator")]];
+	[attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedStringWithDefaultValue(@"TUTORIAL_BODY_STATUS", nil, [NSBundle mainBundle], @"The green checkmark indicates that Psiphon Browser is connected and ready for you to start browsing", @"Text on first tutorial screen which highlights the connection indicator")]];
 
 	NSArray<NSAttributedString*>* bodyText = @[
 											   [[NSAttributedString alloc] initWithString:@""],
 											   attributedString,
-											   [[NSAttributedString alloc] initWithString:NSLocalizedString(@"This is where you can access settings and find help", @"Text on second tutorial screen which highlights the settings button")],
-											   [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Now we'll connect to a Psiphon server so you can start browsing.", @"Text on last tutorial screen which prompts the user to exit tutorial and start browsing with Psiphon Browser")]
+											   [[NSAttributedString alloc] initWithString:NSLocalizedStringWithDefaultValue(@"TUTORIAL_BODY_SETTINGS", nil, [NSBundle mainBundle], @"This is where you can access settings and find help", @"Text on second tutorial screen which highlights the settings button")],
+											   [[NSAttributedString alloc] initWithString:NSLocalizedStringWithDefaultValue(@"TUTORIAL_BODY_FINAL", nil, [NSBundle mainBundle], @"Now we'll connect to a Psiphon server so you can start browsing.", @"Text on last tutorial screen which prompts the user to exit tutorial and start browsing with Psiphon Browser")]
 											   ];
 
 	if (self.index < bodyText.count) {

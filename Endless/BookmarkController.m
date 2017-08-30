@@ -233,9 +233,9 @@ BOOL isRTL;
 
 	isRTL = ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft);
 
-	self.title = NSLocalizedString(@"Bookmarks", @"Bookmarks main dialog title");
+	self.title = NSLocalizedStringWithDefaultValue(@"BOOKMARKS_TITLE", nil, [NSBundle mainBundle], @"Bookmarks", @"Bookmarks main dialog title");
 	self.navigationItem.rightBarButtonItem = addItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addItem:)];
-	self.navigationItem.leftBarButtonItem = leftItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Bookmarks dialog 'Done' button title, dismisses the dialog")
+	self.navigationItem.leftBarButtonItem = leftItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"DONE_ACTION", nil, [NSBundle mainBundle], @"Done", @"Done action")
 																						style:UIBarButtonItemStyleDone target:self.navigationController action:@selector(dismissModalViewControllerAnimated:)];
 	self.navigationController.toolbarHidden = NO;
 	[self setBarButtonItemsForEditing:NO];
@@ -267,7 +267,7 @@ BOOL isRTL;
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
 	if (self.embedded)
-		return NSLocalizedString(@"Bookmarks", @"Bookmarks table header title");
+		return NSLocalizedStringWithDefaultValue(@"BOOKMARKS_TITLE", nil, [NSBundle mainBundle], @"Bookmarks", @"Bookmarks table header title");
 	else
 		return nil;
 }
@@ -349,20 +349,20 @@ BOOL isRTL;
 	if (self.embedded)
 		[[[AppDelegate sharedAppDelegate] webViewController] prepareForNewURLFromString:[bookmark urlString]];
 	else {
-		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Edit Bookmark", @"Edit Bookmark dialog title")
-																				 message:NSLocalizedString(@"Enter the details of the URL to bookmark:", @"Edit Bookmark dialog title text")
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"EDIT_BOOKMARK_TITLE", nil, [NSBundle mainBundle], @"Edit Bookmark", @"Edit Bookmark dialog title")
+																				 message:NSLocalizedStringWithDefaultValue(@"ADD_EDIT_BOOKMARK_TEXT", nil, [NSBundle mainBundle], @"Enter the details of the URL to bookmark:", @"'Edit Bookmark' dialog text")
 																		  preferredStyle:UIAlertControllerStyleAlert];
 		[alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-			textField.placeholder = NSLocalizedString(@"URL", @"'Edit Bookmark' dialog URL field");
+			textField.placeholder = NSLocalizedStringWithDefaultValue(@"ADD_EDIT_BOOKMARK_URL", nil, [NSBundle mainBundle], @"URL", @"'Edit Bookmark' dialog URL field");
 			textField.text = bookmark.urlString;
 		}];
 		[alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-			textField.placeholder = NSLocalizedString(@"Page Name (leave blank to use URL)", @"'Edit Bookmark' dialog page name field");
+			textField.placeholder = NSLocalizedStringWithDefaultValue(@"ADD_EDIT_BOOKMARK_NAME", nil, [NSBundle mainBundle], @"Page Name (leave blank to use URL)", @"'Edit Bookmark' dialog page name field");
 			textField.text = bookmark.name;
 		}];
 
 		__weak  BookmarkController *weakSelf = self;
-		UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"OK action") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+		UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"OK_ACTION", nil, [NSBundle mainBundle], @"OK", @"OK action") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 			UITextField *url = alertController.textFields[0];
 			bookmark.urlString = [url text];
 
@@ -372,7 +372,7 @@ BOOL isRTL;
 			[weakSelf.tableView reloadData];
 		}];
 
-		UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action") style:UIAlertActionStyleCancel handler:nil];
+		UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"CANCEL_ACTION", nil, [NSBundle mainBundle], @"Cancel", @"Cancel action") style:UIAlertActionStyleCancel handler:nil];
 		[alertController addAction:cancelAction];
 		[alertController addAction:okAction];
 
@@ -381,7 +381,7 @@ BOOL isRTL;
 }
 
 - (void)setBarButtonItemsForEditing:(BOOL)forEditing {
-	UIBarButtonItem *b = [[UIBarButtonItem alloc] initWithTitle:forEditing ? NSLocalizedString(@"Done", @"Done button at bottom of screen in bookmarks view") : NSLocalizedString(@"Edit", @"Edit button at bottom of screen in bookmarks view")
+	UIBarButtonItem *b = [[UIBarButtonItem alloc] initWithTitle:forEditing ? NSLocalizedStringWithDefaultValue(@"DONE_ACTION", nil, [NSBundle mainBundle], @"Done", @"Done action") : NSLocalizedStringWithDefaultValue(@"BOOKMARKS_EDIT_BUTTON", nil, [NSBundle mainBundle], @"Edit", @"Edit button at bottom of screen in bookmarks view")
 														  style:UIBarButtonItemStylePlain
 														 target:self
 														 action:forEditing ? @selector(hideEdit) : @selector(showEdit)];

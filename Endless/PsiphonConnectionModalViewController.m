@@ -90,7 +90,7 @@
 		UILabel *serverRegionTextLabel = [[UILabel alloc] init];
 		[serverRegionTextLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
 		serverRegionTextLabel.textAlignment = NSTextAlignmentCenter;
-		serverRegionTextLabel.text = NSLocalizedString(@"Server region:", @"Title that is showing above selected server region");
+		serverRegionTextLabel.text = NSLocalizedStringWithDefaultValue(@"CONNECTION_SERVER_REGION_TITLE", nil, [NSBundle mainBundle], @"Server region:", @"Title that is showing above selected server region");
 		[contentView addSubview:serverRegionTextLabel];
 
 		UILabel *connectionRegionLabel = [[UILabel alloc] init];
@@ -186,7 +186,8 @@
 																	constant:-10],
 									  ]];
 
-		title = NSLocalizedString(@"Connecting...",
+		title = NSLocalizedStringWithDefaultValue(@"CONNECTION_STATUS_CONNECTING", nil, [NSBundle mainBundle], 
+									@"Connecting...",
 								  @"Connection status initial splash modal dialog title for 'Connecting...' state");
 		message = nil;
 	} else if (state == ConnectionStateWaitingForNetwork) {
@@ -220,7 +221,8 @@
 																	constant:-10],
 									  ]];
 
-		title = NSLocalizedString(@"Waiting for network...",
+		title = NSLocalizedStringWithDefaultValue(@"CONNECTION_STATUS_WAITING", nil, [NSBundle mainBundle], 
+									@"Waiting for network...",
 								  @"Connection status initial splash modal dialog title for 'Waiting for network...' state");
 		message = nil;
 	} else if(state == ConnectionStateConnected){
@@ -229,7 +231,7 @@
 		UILabel *serverRegionTextLabel = [[UILabel alloc] init];
 		[serverRegionTextLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
 		serverRegionTextLabel.textAlignment = NSTextAlignmentCenter;
-		serverRegionTextLabel.text = NSLocalizedString(@"Server region:", @"Title that is showing above selected server region");
+		serverRegionTextLabel.text = NSLocalizedStringWithDefaultValue(@"CONNECTION_SERVER_REGION_TITLE", nil, [NSBundle mainBundle], @"Server region:", @"Title that is showing above selected server region");
 		[contentView addSubview:serverRegionTextLabel];
 
 		UILabel *connectionRegionLabel = [[UILabel alloc] init];
@@ -310,13 +312,16 @@
 																	constant:-10],
 									  ]];
 
-		title = NSLocalizedString(@"Connected!",
+		title = NSLocalizedStringWithDefaultValue(@"CONNECTION_STATUS_CONNECTED", nil, [NSBundle mainBundle], 
+									@"Connected!",
 								  @"Connection status initial splash modal dialog title for 'Connected' state");
 		message = nil;
 	} else if(state == ConnectionStateDisconnected) {
-		title = NSLocalizedString(@"Disconnected!",
+		title = NSLocalizedStringWithDefaultValue(@"CONNECTION_STATUS_DISCONNECTED", nil, [NSBundle mainBundle], 
+									@"Disconnected!",
 								  @"Connection status initial splash modal dialog title for 'Psiphon can not start due to an internal error' state");
-		message = NSLocalizedString(@"Psiphon can not start due to an internal error, please send feedback.",
+		message = NSLocalizedStringWithDefaultValue(@"CONNECTION_STATUS_ERROR_MESSAGE", nil, [NSBundle mainBundle], 
+									@"Psiphon can not start due to an internal error, please send feedback.",
 									@"Connection status initial splash modal dialog message for 'Psiphon can not start due to an internal error' state");
 		// TODO: display 'can't start' icon in the contentView
 		contentView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -335,7 +340,7 @@
 -(void) connectionRegionLabelTapped {
 	RegionSelectionViewController *regionSelectionViewController = [[RegionSelectionViewController alloc] init];
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:regionSelectionViewController];
-	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Title of the button that dismisses region selection dialog")
+	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"DONE_ACTION", nil, [NSBundle mainBundle], @"Done", @"Done action")
 																   style:UIBarButtonItemStyleDone target:self
 																  action:@selector(regionSelectionDone)];
 	regionSelectionViewController.navigationItem.rightBarButtonItem = doneButton;

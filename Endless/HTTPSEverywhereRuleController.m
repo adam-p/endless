@@ -15,7 +15,7 @@
 {
 	self = [super initWithStyle:style];
 
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Done button") style:UIBarButtonItemStyleDone target:self.navigationController action:@selector(dismissModalViewControllerAnimated:)];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"DONE_ACTION", nil, [NSBundle mainBundle], @"Done", @"Done action") style:UIBarButtonItemStyleDone target:self.navigationController action:@selector(dismissModalViewControllerAnimated:)];
 
 	self.sortedRuleNames = [[NSMutableArray alloc] initWithCapacity:[[HTTPSEverywhere rules] count]];
 
@@ -34,7 +34,7 @@
 	self.sortedRuleNames = [NSMutableArray arrayWithArray:[self.sortedRuleNames sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
 	self.searchResult = [NSMutableArray arrayWithCapacity:[self.sortedRuleNames count]];
 
-	self.title = NSLocalizedString(@"HTTPS Everywhere Rules", @"HTTPS Everywhere menu title");
+	self.title = NSLocalizedStringWithDefaultValue(@"HTTPSEVERYWHERE_MENU_TITLE", nil, [NSBundle mainBundle], @"HTTPS Everywhere Rules", @"HTTPS Everywhere menu title");
 
 	return self;
 }

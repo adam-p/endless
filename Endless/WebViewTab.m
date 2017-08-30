@@ -202,9 +202,9 @@
 }
 
 - (void)initLocalizables {
-	[self.refresher setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Pull to Refresh Page", @"UI hint that the webpage can be refreshed by pulling(swiping) down")]];
+	[self.refresher setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedStringWithDefaultValue(@"PULL_TO_REFRESH_PAGE", nil, [NSBundle mainBundle], @"Pull to Refresh Page", @"UI hint that the webpage can be refreshed by pulling(swiping) down")]];
 	if(!_title.text) {
-		[_title setText:NSLocalizedString(@"New Tab", @"New browser tab title text")];
+		[_title setText:NSLocalizedStringWithDefaultValue(@"NEW_TAB_TITLE", nil, [NSBundle mainBundle], @"New Tab", @"New browser tab title text")];
 	}
 }
 
@@ -545,13 +545,13 @@
 		// same style as 'Back' button behaviour
 		NSString *callBack = @"console.warn('Scripts may close only the windows that were opened by it.')";
 		if (self.openedByTabHash) {
-			UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Confirm", @"Title for the 'Allow this page to close its tab?' alert") message:NSLocalizedString(@"Allow this page to close its tab?", @"Alert dialog text") preferredStyle:UIAlertControllerStyleAlert];
+			UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"CLOSE_TABS_CONFIRM", nil, [NSBundle mainBundle], @"Confirm", @"Title for the 'Allow this page to close its tab?' alert") message:NSLocalizedStringWithDefaultValue(@"CLOSE_TABS_PROMPT", nil, [NSBundle mainBundle], @"Allow this page to close its tab?", @"Alert dialog text") preferredStyle:UIAlertControllerStyleAlert];
 
-			UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"OK action") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+			UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"OK_ACTION", nil, [NSBundle mainBundle], @"OK", @"OK action") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 				[[[AppDelegate sharedAppDelegate] webViewController] removeTabOpenedByHash:self.tabIndex];
 			}];
 
-			UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action") style:UIAlertActionStyleCancel handler:nil];
+			UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"CANCEL_ACTION", nil, [NSBundle mainBundle], @"Cancel", @"Cancel action") style:UIAlertActionStyleCancel handler:nil];
 			[alertController addAction:cancelAction];
 			[alertController addAction:okAction];
 			callBack = @"";
@@ -662,7 +662,7 @@
 	NSLog(@"[Tab %@] showing error dialog: %@ (%@)", self.tabIndex, msg, error);
 #endif
 
-	UIAlertView *m = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Alert dialog title when webpage has failed to load") message:msg delegate:self cancelButtonTitle: NSLocalizedString(@"OK", "OK action") otherButtonTitles:nil];
+	UIAlertView *m = [[UIAlertView alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"WEB_LOAD_ERROR_TEXT", nil, [NSBundle mainBundle], @"Error", @"Alert dialog title when webpage has failed to load") message:msg delegate:self cancelButtonTitle: NSLocalizedStringWithDefaultValue(@"OK_ACTION", nil, [NSBundle mainBundle], @"OK", "OK action") otherButtonTitles:nil];
 	[m show];
 
 	[self webViewDidFinishLoad:__webView];
@@ -772,22 +772,22 @@
 
 	alertController = [UIAlertController alertControllerWithTitle:href message:alt preferredStyle:UIAlertControllerStyleActionSheet];
 
-	UIAlertAction *openAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Open", @"Action title for long press on link dialog") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+	UIAlertAction *openAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"LINK_LONG_PRESS_OPEN", nil, [NSBundle mainBundle], @"Open", @"Action title for long press on link dialog") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 		[self loadURL:[NSURL URLWithString:href]];
 	}];
 
-	UIAlertAction *openNewTabAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Open in a New Tab", @"Action title for long press on link dialog") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+	UIAlertAction *openNewTabAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"LINK_LONG_PRESS_OPEN_NEW_TAB", nil, [NSBundle mainBundle], @"Open in a New Tab", @"Action title for long press on link dialog") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 		[[[AppDelegate sharedAppDelegate] webViewController] addNewTabForURL:[NSURL URLWithString:href]];
 	}];
 
-	UIAlertAction *openSafariAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Open in Safari", @"Action title for long press on link dialog") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+	UIAlertAction *openSafariAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"LINK_LONG_PRESS_OPEN_SAFARI", nil, [NSBundle mainBundle], @"Open in Safari", @"Action title for long press on link dialog") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:href]];
 	}];
 
-	UIAlertAction *saveImageAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Save Image", @"Action title for long press on image dialog") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+	UIAlertAction *saveImageAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"IMAGE_LONG_PRESS_SAVE", nil, [NSBundle mainBundle], @"Save Image", @"Action title for long press on image dialog") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 		[self requestAuthorizationWithRedirectionToSettings];
 
-		UIAlertView *downloadInProgress = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Downloading…", @"Image download in progress alert title") message:[NSString stringWithFormat:NSLocalizedString(@"Downloading image %@. You will be notified when the download completes.", @"Image download in progress alert text. %@ will be replaced with the URL of the image."), img] delegate:self cancelButtonTitle: NSLocalizedString(@"OK", @"OK action button") otherButtonTitles:nil];
+		UIAlertView *downloadInProgress = [[UIAlertView alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"IMAGE_DOWNLOAD_TITLE", nil, [NSBundle mainBundle], @"Downloading…", @"Image download in progress alert title") message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"IMAGE_DOWNLOAD_TEXT", nil, [NSBundle mainBundle], @"Downloading image %@. You will be notified when the download completes.", @"Image download in progress alert text. %@ will be replaced with the URL of the image."), img] delegate:self cancelButtonTitle: NSLocalizedStringWithDefaultValue(@"OK_ACTION", nil, [NSBundle mainBundle], @"OK", @"OK action") otherButtonTitles:nil];
 		[downloadInProgress show];
 
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -804,14 +804,14 @@
 																error:&error];
 			if (error != nil || (response != nil && [response statusCode] != 200) || imgdata == nil) {
 				dispatch_async(dispatch_get_main_queue(), ^{
-					NSString *errorMessage = [NSString stringWithFormat:NSLocalizedString(@"An error occurred downloading image %@", @"Image download error alert text. %@ will be replaced with the URL of the image."), img];
+					NSString *errorMessage = [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"IMAGE_DOWNLOAD_ERROR_GENERIC", nil, [NSBundle mainBundle], @"An error occurred downloading image %@", @"Image download error alert text. %@ will be replaced with the URL of the image."), img];
 					if (error != nil) {
-						errorMessage = [errorMessage stringByAppendingString:[NSString stringWithFormat:@". %@ %@.", NSLocalizedString(@"Error:", @"Text preceeding error description"), [error localizedDescription]]];
+						errorMessage = [errorMessage stringByAppendingString:[NSString stringWithFormat:@". %@ %@.", NSLocalizedStringWithDefaultValue(@"IMAGE_DOWNLOAD_ERROR_PREFIX", nil, [NSBundle mainBundle], @"Error:", @"Text preceeding error description"), [error localizedDescription]]];
 					}
 					if ([response statusCode] != 200) {
-						errorMessage = [errorMessage stringByAppendingString:[NSString stringWithFormat:@". %@ %@.", NSLocalizedString(@"Status code:", @"Text preceeding http response status code"), [NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]]]];
+						errorMessage = [errorMessage stringByAppendingString:[NSString stringWithFormat:@". %@ %@.", NSLocalizedStringWithDefaultValue(@"IMAGE_DOWNLOAD_STATUS_CODE_PREFIX", nil, [NSBundle mainBundle], @"Status code:", @"Text preceeding http response status code"), [NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]]]];
 					}
-					UIAlertView *downloadError = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Image download error alert title") message:errorMessage delegate:self cancelButtonTitle: NSLocalizedString(@"OK", @"OK action button") otherButtonTitles:nil];
+					UIAlertView *downloadError = [[UIAlertView alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"IMAGE_DOWNLOAD_ERROR_TITLE", nil, [NSBundle mainBundle], @"Error", @"Image download error alert title") message:errorMessage delegate:self cancelButtonTitle: NSLocalizedStringWithDefaultValue(@"OK_ACTION", nil, [NSBundle mainBundle], @"OK", @"OK action") otherButtonTitles:nil];
 					[downloadInProgress dismissWithClickedButtonIndex:0 animated:YES];
 					[downloadError show];
 				});
@@ -820,7 +820,7 @@
 				UIImageWriteToSavedPhotosAlbum(i, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
 
 				dispatch_async(dispatch_get_main_queue(), ^{
-					UIAlertView *downloadSuccess = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success!", @"Image download success alert title") message:[NSString stringWithFormat:NSLocalizedString(@"Successfully downloaded image %@", @"Image download success alert text. %@ will be replaced with the URL of the image."), img] delegate:self cancelButtonTitle: NSLocalizedString(@"OK", @"OK action button") otherButtonTitles:nil];
+					UIAlertView *downloadSuccess = [[UIAlertView alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"IMAGE_DOWNLOAD_SUCCESS_TITLE", nil, [NSBundle mainBundle], @"Success!", @"Image download success alert title") message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"IMAGE_DOWNLOAD_SUCCESS_TEXT", nil, [NSBundle mainBundle], @"Successfully downloaded image %@", @"Image download success alert text. %@ will be replaced with the URL of the image."), img] delegate:self cancelButtonTitle: NSLocalizedStringWithDefaultValue(@"OK_ACTION", nil, [NSBundle mainBundle], @"OK", @"OK action") otherButtonTitles:nil];
 
 					[downloadInProgress dismissWithClickedButtonIndex:0 animated:YES];
 					[downloadSuccess show];
@@ -829,7 +829,7 @@
 		});
 	}];
 
-	UIAlertAction *copyURLAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Copy URL", @"Action title for long press on link dialog") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+	UIAlertAction *copyURLAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"LINK_LONG_PRESS_COPY_URL", nil, [NSBundle mainBundle], @"Copy URL", @"Action title for long press on link dialog") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 		[[UIPasteboard generalPasteboard] setString:(href ? href : img)];
 	}];
 
@@ -844,7 +844,7 @@
 
 	[alertController addAction:copyURLAction];
 
-	UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
+	UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"CANCEL_ACTION", nil, [NSBundle mainBundle], @"Cancel", @"Cancel action") style:UIAlertActionStyleCancel handler:nil];
 	[alertController addAction:cancelAction];
 
 	UIPopoverPresentationController *popover = [alertController popoverPresentationController];
@@ -888,13 +888,13 @@
 					// changes privacy settings in the settings menu.
 					// It will be automatically relaunched when the user
 					// navigates back.
-					NSString *accessDescription = NSLocalizedString(@"\"Psiphon Browser\" needs access to your photo library to save and upload images", @"Alert text telling user additional permissions must be granted to save and upload photos in the browser");
-					UIAlertController *alertController = [UIAlertController alertControllerWithTitle:accessDescription message:NSLocalizedString(@"To give permissions tap on 'Change Settings' button", @"Alert text telling user which button to press if they want to be redirected to the settings menu") preferredStyle:UIAlertControllerStyleAlert];
+					NSString *accessDescription = NSLocalizedStringWithDefaultValue(@"PHOTO_LIBRARY_ACCESS_PROMPT", nil, [NSBundle mainBundle], @"\"Psiphon Browser\" needs access to your photo library to save and upload images", @"Alert text telling user additional permissions must be granted to save and upload photos in the browser");
+					UIAlertController *alertController = [UIAlertController alertControllerWithTitle:accessDescription message:NSLocalizedStringWithDefaultValue(@"PHOTO_LIBRARY_ACCESS_INSTRUCTION", nil, [NSBundle mainBundle], @"To give permissions tap on 'Change Settings' button", @"Alert text telling user which button to press if they want to be redirected to the settings menu") preferredStyle:UIAlertControllerStyleAlert];
 
-					UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"Text of cancel button on alert which will dismiss the popup") style:UIAlertActionStyleCancel handler:nil];
+					UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"CANCEL_ACTION", nil, [NSBundle mainBundle], @"Cancel", @"Cancel action") style:UIAlertActionStyleCancel handler:nil];
 					[alertController addAction:cancelAction];
 
-					UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Change Settings", @"Text of button on alert which will redirect the user to the settings menu") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+					UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"CHANGE_SETTINGS_BUTTON", nil, [NSBundle mainBundle], @"Change Settings", @"Text of button on alert which will redirect the user to the settings menu") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 						[[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 					}];
 					[alertController addAction:settingsAction];
@@ -1126,7 +1126,7 @@
 	// Add "more" button which allows user to push DocumentInteractionController for presented file
 	UIButton *more = [[UIButton alloc] init];
 	[more setTitleColor:[parent.view tintColor] forState:UIControlStateNormal];
-	[more setTitle:NSLocalizedString(@"More...", @"Text of button on download preview screen which allows users to see what other actions they can perform with the file") forState:UIControlStateNormal];
+	[more setTitle:NSLocalizedStringWithDefaultValue(@"DOWNLOAD_PREVIEW_MORE", nil, [NSBundle mainBundle], @"More...", @"Text of button on download preview screen which allows users to see what other actions they can perform with the file") forState:UIControlStateNormal];
 	[more addTarget:self action:@selector(presentOptionsMenuForCurrentDownload:) forControlEvents:UIControlEventTouchUpInside];
 	[downloadPreview  addSubview:more];
 

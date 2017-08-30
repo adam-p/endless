@@ -218,7 +218,7 @@
 	title.font = [UIFont fontWithName:@"Bourbon-Oblique" size:self.view.frame.size.width * 0.10625f];
 	title.textColor = [UIColor whiteColor];
 	title.textAlignment = NSTextAlignmentCenter;
-	title.text = NSLocalizedString(@"PSIPHON BROWSER", @"Title displayed at top of all onboarding screens. This should be in all-caps if that makes sense in your language.");
+	title.text = NSLocalizedStringWithDefaultValue(@"ONBOARDING_APP_NAME", nil, [NSBundle mainBundle], @"PSIPHON BROWSER", @"Title displayed at top of all onboarding screens. This should be in all-caps if that makes sense in your language.");
 	if ([self unsupportedCharactersForFont:title.font.fontName withString:title.text]) {
 		title.font = [UIFont systemFontOfSize:self.view.frame.size.width * 0.075f];
 	}
@@ -264,7 +264,7 @@
 
 	subtitle.adjustsFontSizeToFitWidth = YES;
 	subtitle.font = [UIFont fontWithName:kSubtitleFontName size:18.0f];
-	subtitle.text = NSLocalizedString(@"BROWSE BEYOND BORDERS", @"Title displayed at the top of all onboardings screens. This should be in all-caps if that makes sense in your language. This is a slogan and should be kept short and punchy.");
+	subtitle.text = NSLocalizedStringWithDefaultValue(@"ONBOARDING_APP_SUBTITLE", nil, [NSBundle mainBundle], @"BROWSE BEYOND BORDERS", @"Title displayed at the top of all onboardings screens. This should be in all-caps if that makes sense in your language. This is a slogan and should be kept short and punchy.");
 	subtitle.textAlignment = NSTextAlignmentCenter;
 	subtitle.textColor = [UIColor whiteColor];
 
@@ -311,7 +311,7 @@
 
 	/* Setup skip button */
 	skipButton = [[UIButton alloc] init];
-	[skipButton setTitle:NSLocalizedString(@"SKIP", @"Text of button at the top right or left (depending on rtl) of the onboarding screens which allows user to skip onboarding") forState:UIControlStateNormal];
+	[skipButton setTitle:NSLocalizedStringWithDefaultValue(@"ONBOARDING_SKIP_BUTTON", nil, [NSBundle mainBundle], @"SKIP", @"Text of button at the top right or left (depending on rtl) of the onboarding screens which allows user to skip onboarding") forState:UIControlStateNormal];
 	[skipButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
 	[skipButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:16.0f]];
 	[skipButton.titleLabel setAdjustsFontSizeToFitWidth:YES];

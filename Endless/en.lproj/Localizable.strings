@@ -1,440 +1,434 @@
-/* %ld will be replaced with the number 1 */
-"%ld rule in use" = "%ld rule in use";
-
-/* %ld will be replaced with a natural number */
-"%ld rules in use" = "%ld rules in use";
-
-/* Alert text telling user additional permissions must be granted to save and upload photos in the browser */
-"\"Psiphon Browser\" needs access to your photo library to save and upload images" = "\"Psiphon Browser\" needs access to your photo library to save and upload images";
-
-/* Title text on one of the on-boarding screens */
-"Access the Web" = "Access the Web";
+/* External link to the about page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/about.html for french. */
+"ABOUT_PAGE_URL" = "https://psiphon.ca/en/about.html";
 
 /* 'Add bookmark' dialog title */
-"Add Bookmark" = "Add Bookmark";
+"ADD_BOOKMARK_TITLE" = "Add Bookmark";
 
-/* Title above a list of rules */
-"All rules" = "All rules";
+/* 'Edit Bookmark' dialog page name field
+   Add bookmark page name field */
+"ADD_EDIT_BOOKMARK_NAME" = "Page Name (leave blank to use URL)";
 
-/* Alert dialog text */
-"Allow this page to close its tab?" = "Allow this page to close its tab?";
+/* 'Add Bookmark' dialog text
+   'Edit Bookmark' dialog text */
+"ADD_EDIT_BOOKMARK_TEXT" = "Enter the details of the URL to bookmark:";
 
-/* Image download error alert text. %@ will be replaced with the URL of the image. */
-"An error occurred downloading image %@" = "An error occurred downloading image %@";
+/* 'Edit Bookmark' dialog URL field
+   Add bookmark URL field */
+"ADD_EDIT_BOOKMARK_URL" = "URL";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Austria" = "Austria";
-
-/* HTTP authentication  alert title */
-"Authentication Required" = "Authentication Required";
-
-/* Field name for display in list */
-"Begins On" = "Begins On";
-
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Belgium" = "Belgium";
-
-/* The name of the pseudo-region a user can select if they want to use a Psiphon server with the best performance -- speed, latency, etc., rather than specify a particular region/country. This appears in a combo box and should be kept short. */
-"Best Performance" = "Best Performance";
+/* Edit button at bottom of screen in bookmarks view */
+"BOOKMARKS_EDIT_BUTTON" = "Edit";
 
 /* Bookmarks main dialog title
    Bookmarks table header title */
-"Bookmarks" = "Bookmarks";
+"BOOKMARKS_TITLE" = "Bookmarks";
 
-/* Title displayed at the top of all onboardings screens. This should be in all-caps if that makes sense in your language. This is a slogan and should be kept short and punchy. */
-"BROWSE BEYOND BORDERS" = "BROWSE BEYOND BORDERS";
-
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Bulgaria" = "Bulgaria";
+/* Cancel action */
+"CANCEL_ACTION" = "Cancel";
 
 /* Field name for display in list */
-"Business Category" = "Business Category";
-
-/* Title text on one of the on-boarding screens. It indicates to the user that Psiphon Browser's primary purpose is to get past censorship. */
-"Bypass Censorship" = "Bypass Censorship";
-
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Canada" = "Canada";
-
-/* Cancel
-   Cancel action
-   Cancel button on alert
-   Cancel button text which allows user to exit bookmarks view
-   Text of button to discard feedback and return to main settings menu
-   Text of cancel button on alert which will dismiss the popup */
-"Cancel" = "Cancel";
-
-/* Text displayed on navigation bar reflecting file download state */
-"Cancelled" = "Cancelled";
+"CERT_BEGINS_ON" = "Begins On";
 
 /* Field name for display in list */
-"Certificate Information" = "Certificate Information";
-
-/* Text of button on alert which will redirect the user to the settings menu */
-"Change Settings" = "Change Settings";
+"CERT_BUSCAT" = "Business Category";
 
 /* Field name for display in list */
-"Cipher" = "Cipher";
-
-/* Accept button on alert which triggers clearing all local cookies and browsing data */
-"Clear Cookies and Data" = "Clear Cookies and Data";
+"CERT_CERTIFICATE_INFORMATION" = "Certificate Information";
 
 /* Field name for display in list */
-"Common Name" = "Common Name";
-
-/* Title for the 'Allow this page to close its tab?' alert */
-"Confirm" = "Confirm";
-
-/* Connection status initial splash modal dialog title for 'Connected' state */
-"Connected!" = "Connected!";
-
-/* Connection status initial splash modal dialog title for 'Connecting...' state */
-"Connecting..." = "Connecting...";
+"CERT_CIPHER" = "Cipher";
 
 /* Field name for display in list */
-"Connection Information" = "Connection Information";
-
-/* Action title for long press on link dialog */
-"Copy URL" = "Copy URL";
+"CERT_CN" = "Common Name";
 
 /* Field name for display in list */
-"Country" = "Country";
-
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Czech Republic" = "Czech Republic";
-
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Denmark" = "Denmark";
-
-/* Connection status initial splash modal dialog title for 'Psiphon can not start due to an internal error' state */
-"Disconnected!" = "Disconnected!";
-
-/* Bookmarks dialog 'Done' button title, dismisses the dialog
-   Done action button. dismisses SSL certificate information dialog
-   Done button
-   Done button at bottom of screen in bookmarks view
-   Done button title, dismisses the tab chooser
-   Title of the button that dismisses region selection dialog
-   Title of the button that dismisses the settings menu */
-"Done" = "Done";
-
-/* Image download in progress alert text. %@ will be replaced with the URL of the image. */
-"Downloading image %@. You will be notified when the download completes." = "Downloading image %@. You will be notified when the download completes.";
-
-/* Image download in progress alert title */
-"Downloading…" = "Downloading…";
-
-/* Edit button at bottom of screen in bookmarks view */
-"Edit" = "Edit";
-
-/* Edit Bookmark dialog title */
-"Edit Bookmark" = "Edit Bookmark";
-
-/* 'Add bookmark' dialog text
-   Edit Bookmark dialog title text */
-"Enter the details of the URL to bookmark:" = "Enter the details of the URL to bookmark:";
-
-/* Alert dialog title when webpage has failed to load
-   Image download error alert title
-   Text displayed on navigation bar reflecting file download state */
-"Error" = "Error";
-
-/* Text preceeding error description */
-"Error:" = "Error:";
+"CERT_CONNECTION_INFORMATION" = "Connection Information";
 
 /* Field name for display in list */
-"Expires After" = "Expires After";
+"CERT_COUNTRY" = "Country";
+
+/* This string will end up as '<date> 'at' <time>'. For example 2016-03-01 at 19:00:00 EST. Only 'at' should be translated with apostrophes preserved and the date and time strings placed where appropriate. */
+"CERT_DATE_TIME" = "yyyy-MM-dd 'at' HH:mm:ss zzz";
 
 /* Field name for display in list */
-"Extended Validation: Organization" = "Extended Validation: Organization";
+"CERT_EV_ORG" = "Extended Validation: Organization";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"France" = "France";
+/* Field name for display in list */
+"CERT_EXPIRES_AFTER" = "Expires After";
 
-/* FAQ link text */
-"Frequently Asked Questions" = "Frequently Asked Questions";
+/* Field name for display in list */
+"CERT_ISSUED_BY" = "Issued By";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Germany" = "Germany";
+/* Field name for display in list */
+"CERT_ISSUED_TO" = "Issued To";
+
+/* Field name for display in list */
+"CERT_LOCALITY" = "Locality";
+
+/* Field name for display in list */
+"CERT_OBJECT_IDENTIFIER" = "Object Identifier";
+
+/* Field name for display in list */
+"CERT_ORG" = "Organization";
+
+/* Field name for display in list */
+"CERT_ORG_UNIT_NUMBER" = "Organizational Unit Number";
+
+/* Field name for display in list */
+"CERT_PERIOD_OF_VALIDITY" = "Period of Validity";
+
+/* Field name for display in list */
+"CERT_POSTAL_CODE" = "Postal Code";
+
+/* Field name for display in list */
+"CERT_PROTOCOL" = "Protocol";
+
+/* Field name for display in list */
+"CERT_SERIAL_NUMBER" = "Serial Number";
+
+/* Field name for display in list */
+"CERT_SIG_ALGO" = "Signature Algorithm";
+
+/* Field name for display in list */
+"CERT_STATE" = "State/Province";
+
+/* Field name for display in list */
+"CERT_STREET_ADDR" = "Street Address";
 
 /* No comment provided by engineer. */
-"Go to Settings" = "Go to Settings";
+"CERT_UNKNOWN_ORGANIZATION" = "Unknown Organization";
 
-/* Title text on one of the on-boarding screens. This is the final page of the on-boarding and is sending the user off on their journey across the Internet. */
-"Happy Browsing!" = "Happy Browsing!";
+/* Field name for display in list */
+"CERT_VERSION" = "Version";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Hong Kong" = "Hong Kong";
+/* Text of button on alert which will redirect the user to the settings menu */
+"CHANGE_SETTINGS_BUTTON" = "Change Settings";
 
-/* HTTPS Everywhere menu title */
-"HTTPS Everywhere Rules" = "HTTPS Everywhere Rules";
+/* Title for the 'Allow this page to close its tab?' alert */
+"CLOSE_TABS_CONFIRM" = "Confirm";
 
-/* External link to the about page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/about.html for french. */
-"https://psiphon.ca/en/about.html" = "https://psiphon.ca/en/about.html";
+/* Alert dialog text */
+"CLOSE_TABS_PROMPT" = "Allow this page to close its tab?";
+
+/* Action button in connection dialog that will open the app settings */
+"CONNECTING_GO_TO_SETTINGS" = "Go to Settings";
+
+/* Button text on connection status modal that brings the user to the app Settings */
+"CONNECTION_ALERT_SETTINGS_ACTION" = "Settings";
+
+/* Title that is showing above selected server region */
+"CONNECTION_SERVER_REGION_TITLE" = "Server region:";
+
+/* Connection status initial splash modal dialog title for 'Connected' state */
+"CONNECTION_STATUS_CONNECTED" = "Connected!";
+
+/* Connection status initial splash modal dialog title for 'Connecting...' state */
+"CONNECTION_STATUS_CONNECTING" = "Connecting...";
+
+/* Connection status initial splash modal dialog title for 'Psiphon can not start due to an internal error' state */
+"CONNECTION_STATUS_DISCONNECTED" = "Disconnected!";
+
+/* Connection status initial splash modal dialog message for 'Psiphon can not start due to an internal error' state */
+"CONNECTION_STATUS_ERROR_MESSAGE" = "Psiphon can not start due to an internal error, please send feedback.";
+
+/* Connection status initial splash modal dialog title for 'Waiting for network...' state */
+"CONNECTION_STATUS_WAITING" = "Waiting for network...";
+
+/* Title of the button that dismisses the settings menu */
+"Done" = "Done";
+
+/* Done action */
+"DONE_ACTION" = "Done";
+
+/* Text of button on download preview screen which allows users to see what other actions they can perform with the file */
+"DOWNLOAD_PREVIEW_MORE" = "More...";
+
+/* Text displayed on navigation bar reflecting file download state */
+"DOWNLOAD_STATE_CANCELLED" = "Cancelled";
+
+/* Text displayed on navigation bar reflecting file download state */
+"DOWNLOAD_STATE_ERROR" = "Error";
+
+/* Edit Bookmark dialog title */
+"EDIT_BOOKMARK_TITLE" = "Edit Bookmark";
+
+/* FAQ link text */
+"FAQ_LINK_TEXT" = "Frequently Asked Questions";
 
 /* External link to the FAQ page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/faq.html for french. */
-"https://psiphon.ca/en/faq.html" = "https://psiphon.ca/en/faq.html";
+"FAQ_URL" = "https://psiphon.ca/en/faq.html";
 
-/* External link to the license page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/license.html for french. */
-"https://psiphon.ca/en/license.html" = "https://psiphon.ca/en/license.html";
+/* Comments section placeholder text */
+"FEEDBACK_COMMENTS_PLACEHOLDER" = "What's on your mind? Please leave us your feedback";
 
-/* External link to the privacy policy page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/privacy.html for french. */
-"https://psiphon.ca/en/privacy.html" = "https://psiphon.ca/en/privacy.html";
+/* Text referring user to frequently asked questions. %@ is where the separate translation for the phrase 'Frequently Asked Questions' will be placed. */
+"FEEDBACK_FAQ_DIRECTION" = "You can find solutions to many common problems in our %@.";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Hungary" = "Hungary";
+/* Feedback footer text referring users to privacy policy. %@ is where the separate translation for the phrase 'Privacy Policy' will be placed. */
+"FEEDBACK_FOOTER_DATA_COLLECTION" = "Learn more about the data we collect in our %@";
+
+/* Feedback footer text. */
+"FEEDBACK_FOOTER_DIAGNOSTIC" = "Please note that this diagnostic data does not identify you, and it helps us keep Psiphon running smoothly.";
 
 /* Feedback footer text referring users to feedback email. %@ is where the separate translation for the email will be placed. */
-"If the above form is not working or you would like to send screenshots, please email us at %@" = "If the above form is not working or you would like to send screenshots, please email us at %@";
+"FEEDBACK_FOOTER_EMAIL" = "If the above form is not working or you would like to send screenshots, please email us at %@";
 
-/* Body text on one of the on-boarding screens. This intention of this text to let the user know that their sites and services -- Facebook, Twitter, etc. -- can be access within Psiphon Browser via web pages. */
-"If your favourite app is blocked, try their website in Psiphon Browser" = "If your favourite app is blocked, try their website in Psiphon Browser";
+/* Introduction text at top of feedback form */
+"FEEDBACK_INTRODUCTION" = "Your feedback makes Psiphon better!";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"India" = "India";
+/* Text of button to send feedback */
+"FEEDBACK_SEND_BUTTON" = "Send";
 
-/* Field name for display in list */
-"Issued By" = "Issued By";
+/* Text explaining thumbs down choice in feedback */
+"FEEDBACK_THUMBS_DOWN_TEXT" = "Psiphon often fails\nto connect or\ndoesn't perform well\nenough.";
 
-/* Field name for display in list */
-"Issued To" = "Issued To";
+/* Text explaining thumbs up choice in feedback */
+"FEEDBACK_THUMBS_UP_TEXT" = "Psiphon connects\nand performs the\nway I want it to.";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Italy" = "Italy";
+/* HTTP authentication alert log in button action */
+"HTTP_AUTH_LOG_IN" = "Log In";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Japan" = "Japan";
+/* HTTP authentication alert password input title */
+"HTTP_AUTH_PASSWORD" = "Password";
+
+/* HTTP authentication alert title */
+"HTTP_AUTH_TITLE" = "Authentication Required";
+
+/* HTTP authentication alert user name input title */
+"HTTP_AUTH_USER_NAME" = "User Name";
+
+/* HTTPS Everywhere menu title */
+"HTTPSEVERYWHERE_MENU_TITLE" = "HTTPS Everywhere Rules";
+
+/* Image download error alert text. %@ will be replaced with the URL of the image. */
+"IMAGE_DOWNLOAD_ERROR_GENERIC" = "An error occurred downloading image %@";
+
+/* Text preceeding error description */
+"IMAGE_DOWNLOAD_ERROR_PREFIX" = "Error:";
+
+/* Image download error alert title */
+"IMAGE_DOWNLOAD_ERROR_TITLE" = "Error";
+
+/* Text preceeding http response status code */
+"IMAGE_DOWNLOAD_STATUS_CODE_PREFIX" = "Status code:";
+
+/* Image download success alert text. %@ will be replaced with the URL of the image. */
+"IMAGE_DOWNLOAD_SUCCESS_TEXT" = "Successfully downloaded image %@";
+
+/* Image download success alert title */
+"IMAGE_DOWNLOAD_SUCCESS_TITLE" = "Success!";
+
+/* Image download in progress alert text. %@ will be replaced with the URL of the image. */
+"IMAGE_DOWNLOAD_TEXT" = "Downloading image %@. You will be notified when the download completes.";
+
+/* Image download in progress alert title */
+"IMAGE_DOWNLOAD_TITLE" = "Downloading…";
+
+/* Action title for long press on image dialog */
+"IMAGE_LONG_PRESS_SAVE" = "Save Image";
 
 /* Text above language selection box
    Title above language box which displays the current app language and all available languages that the app is localized for */
-"Language" = "Language";
+"LANGUAGE_SELECT_TITLE" = "Language";
 
-/* Feedback footer text referring users to privacy policy. %@ is where the separate translation for the phrase 'Privacy Policy' will be placed. */
-"Learn more about the data we collect in our %@" = "Learn more about the data we collect in our %@";
+/* External link to the license page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/license.html for french. */
+"LICENSE_PAGE_URL" = "https://psiphon.ca/en/license.html";
 
-/* Title of third tutorial screen which prompts the user to exit tutorial and start browsing with Psiphon Browser */
-"Learning time is over" = "Learning time is over";
+/* Action title for long press on link dialog */
+"LINK_LONG_PRESS_COPY_URL" = "Copy URL";
 
-/* Final button in tutorial which user clicks to exit tutorial and start browsing with Psiphon Browser */
-"Let's Go!" = "Let's Go!";
+/* Action title for long press on link dialog */
+"LINK_LONG_PRESS_OPEN" = "Open";
 
-/* Field name for display in list */
-"Locality" = "Locality";
+/* Action title for long press on link dialog */
+"LINK_LONG_PRESS_OPEN_NEW_TAB" = "Open in a New Tab";
 
-/* HTTP authentication alert log in button action */
-"Log In" = "Log In";
-
-/* Title screen displaying logs */
-"Logs" = "Logs";
+/* Action title for long press on link dialog */
+"LINK_LONG_PRESS_OPEN_SAFARI" = "Open in Safari";
 
 /* InAppSettingsKit */
 "Mail not configured" = "Mail not configured";
 
-/* No comment provided by engineer. */
-"Message Text View" = "Message Text View";
-
-/* Text of button on download preview screen which allows users to see what other actions they can perform with the file */
-"More..." = "More...";
-
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Netherlands" = "Netherlands";
-
 /* New browser tab title text */
-"New Tab" = "New Tab";
+"NEW_TAB_TITLE" = "New Tab";
 
-/* Text of the button that the user presses to proceed to the next screen of onboarding */
-"Next" = "Next";
+/* No comment provided by engineer. */
+"NYALERT_TEXT" = "Message Text View";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Norway" = "Norway";
+/* No comment provided by engineer. */
+"NYALERT_TITLE" = "Title Label";
 
-/* Text on last tutorial screen which prompts the user to exit tutorial and start browsing with Psiphon Browser */
-"Now we'll connect to a Psiphon server so you can start browsing." = "Now we'll connect to a Psiphon server so you can start browsing.";
-
-/* Field name for display in list */
-"Object Identifier" = "Object Identifier";
-
-/* InAppSettingsKit
-   OK action
-   OK action button */
+/* InAppSettingsKit */
 "OK" = "OK";
 
-/* Action title for long press on link dialog */
-"Open" = "Open";
+/* OK action */
+"OK_ACTION" = "OK";
 
-/* Action title for long press on link dialog */
-"Open in a New Tab" = "Open in a New Tab";
+/* Body text on one of the on-boarding screens. It is indicating to the user that Psiphon Browser allows them to access the Internet (without censorship). */
+"ONBOARDING_ACCESS_TEXT" = "The Internet at your fingertips";
 
-/* Action title for long press on link dialog */
-"Open in Safari" = "Open in Safari";
-
-/* Field name for display in list */
-"Organization" = "Organization";
-
-/* Field name for display in list */
-"Organizational Unit Number" = "Organizational Unit Number";
-
-/* 'Edit Bookmark' dialog page name field
-   Add bookmark page name field */
-"Page Name (leave blank to use URL)" = "Page Name (leave blank to use URL)";
-
-/* HTTP authentication alert password input title */
-"Password" = "Password";
-
-/* Field name for display in list */
-"Period of Validity" = "Period of Validity";
-
-/* Feedback footer text. */
-"Please note that this diagnostic data does not identify you, and it helps us keep Psiphon running smoothly." = "Please note that this diagnostic data does not identify you, and it helps us keep Psiphon running smoothly.";
-
-/* Field name for display in list */
-"Postal Code" = "Postal Code";
-
-/* Privacy Policy link text */
-"Privacy Policy" = "Privacy Policy";
-
-/* Field name for display in list */
-"Protocol" = "Protocol";
+/* Title text on one of the on-boarding screens */
+"ONBOARDING_ACCESS_TITLE" = "Access the Web";
 
 /* Title displayed at top of all onboarding screens. This should be in all-caps if that makes sense in your language. */
-"PSIPHON BROWSER" = "PSIPHON BROWSER";
+"ONBOARDING_APP_NAME" = "PSIPHON BROWSER";
 
-/* Connection status initial splash modal dialog message for 'Psiphon can not start due to an internal error' state */
-"Psiphon can not start due to an internal error, please send feedback." = "Psiphon can not start due to an internal error, please send feedback.";
+/* Title displayed at the top of all onboardings screens. This should be in all-caps if that makes sense in your language. This is a slogan and should be kept short and punchy. */
+"ONBOARDING_APP_SUBTITLE" = "BROWSE BEYOND BORDERS";
 
-/* Text explaining thumbs up choice in feedback */
-"Psiphon connects\nand performs the\nway I want it to." = "Psiphon connects\nand performs the\nway I want it to.";
+/* Body text on one of the on-boarding screens. The intention of this screen is to let the user know that their sites and services -- Facebook, Twitter, etc. -- can be accessed within Psiphon Browser via web pages. */
+"ONBOARDING_APPS_TEXT" = "Your favorite apps have a web interface that works great in Psiphon Browser";
 
-/* Text explaining thumbs down choice in feedback */
-"Psiphon often fails\nto connect or\ndoesn't perform well\nenough." = "Psiphon often fails\nto connect or\ndoesn't perform well\nenough.";
+/* Title text on one of the on-boarding screens. The intention of this screen is to let the user know that their sites and services -- Facebook, Twitter, etc. -- can be accessed within Psiphon Browser via web pages. */
+"ONBOARDING_APPS_TITLE" = "Your Apps in Your Browser";
+
+/* Title text on one of the on-boarding screens. This is the final page of the on-boarding and is sending the user off on their journey across the Internet. */
+"ONBOARDING_BROWSING_TITLE" = "Happy Browsing!";
+
+/* Text of the button that the user presses to proceed to the next screen of onboarding */
+"ONBOARDING_NEXT_BUTTON" = "Next";
+
+/* Text of button at the top right or left (depending on rtl) of the onboarding screens which allows user to skip onboarding */
+"ONBOARDING_SKIP_BUTTON" = "SKIP";
+
+/* Alert text telling user which button to press if they want to be redirected to the settings menu */
+"PHOTO_LIBRARY_ACCESS_INSTRUCTION" = "To give permissions tap on 'Change Settings' button";
+
+/* Alert text telling user additional permissions must be granted to save and upload photos in the browser */
+"PHOTO_LIBRARY_ACCESS_PROMPT" = "\"Psiphon Browser\" needs access to your photo library to save and upload images";
+
+/* Privacy Policy link text */
+"PRIVACY_POLICY_LINK_TEXT" = "Privacy Policy";
+
+/* External link to the privacy policy page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/privacy.html for french. */
+"PRIVACY_POLICY_URL" = "https://psiphon.ca/en/privacy.html";
 
 /* UI hint that the webpage can be refreshed by pulling(swiping) down */
-"Pull to Refresh Page" = "Pull to Refresh Page";
+"PULL_TO_REFRESH_PAGE" = "Pull to Refresh Page";
 
-/* Title of alert to clear local cookies and browsing data */
-"Remove all cookies and browsing data?" = "Remove all cookies and browsing data?";
-
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Romania" = "Romania";
+/* Title above a list of rules */
+"RULES_ALL_LIST_TITLE" = "All rules";
 
 /* Title above a list of rules in use */
-"Rules in use on current page" = "Rules in use on current page";
+"RULES_CURRENT_PAGE_LIST_TITLE" = "Rules in use on current page";
 
-/* Action title for long press on image dialog */
-"Save Image" = "Save Image";
+/* %ld will be replaced with a natural number */
+"RULES_IN_USE_PLURAL" = "%ld rules in use";
 
-/* Text of button to send feedback */
-"Send" = "Send";
+/* %ld will be replaced with the number 1 */
+"RULES_IN_USE_SINGULAR" = "%ld rule in use";
 
-/* Field name for display in list */
-"Serial Number" = "Serial Number";
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_AT" = "Austria";
 
-/* Title that is showing above selected server region */
-"Server region:" = "Server region:";
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_BE" = "Belgium";
+
+/* The name of the pseudo-region a user can select if they want to use a Psiphon server with the best performance -- speed, latency, etc., rather than specify a particular region/country. This appears in a combo box and should be kept short. */
+"SERVER_REGION_BEST" = "Best Performance";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_BG" = "Bulgaria";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_CA" = "Canada";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_CH" = "Switzerland";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_CZ" = "Czech Republic";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_DE" = "Germany";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_DK" = "Denmark";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_ES" = "Spain";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_FR" = "France";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_GB" = "United Kingdom";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_HK" = "Hong Kong";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_HU" = "Hungary";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_IN" = "India";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_IT" = "Italy";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_JP" = "Japan";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_NL" = "Netherlands";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_NO" = "Norway";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_RO" = "Romania";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_SE" = "Sweden";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_SG" = "Singapore";
+
+/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
+"SERVER_REGION_US" = "United States";
 
 /* No comment provided by engineer. */
 "Settings" = "Settings";
 
-/* Title of second tutorial screen which highlights the settings button */
-"Settings & Help" = "Settings & Help";
+/* Title of alert to clear local cookies and browsing data */
+"SETTINGS_CLEAR_ALL_COOKIES_PROMPT" = "Remove all cookies and browsing data?";
 
-/* Field name for display in list */
-"Signature Algorithm" = "Signature Algorithm";
+/* Accept button on alert which triggers clearing all local cookies and browsing data */
+"SETTINGS_CLEAR_ALL_COOKIES_PROMPT_BUTTON" = "Clear Cookies and Data";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Singapore" = "Singapore";
-
-/* Text of button at the top right or left (depending on rtl) of the onboarding screens which allows user to skip onboarding */
-"SKIP" = "SKIP";
-
-/* No comment provided by engineer. */
-"SKIP TUTORIAL" = "SKIP TUTORIAL";
-
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Spain" = "Spain";
+/* Title screen displaying logs */
+"SETTINGS_LOGS_TITLE" = "Logs";
 
 /* Text of button that user presses to complete onboarding and start tutorial */
-"Start Tutorial" = "Start Tutorial";
-
-/* Field name for display in list */
-"State/Province" = "State/Province";
-
-/* Text preceeding http response status code */
-"Status code:" = "Status code:";
-
-/* Title of first tutorial screen which highlights the connection indicator */
-"Status Indicator" = "Status Indicator";
-
-/* Field name for display in list */
-"Street Address" = "Street Address";
-
-/* Image download success alert title */
-"Success!" = "Success!";
-
-/* Image download success alert text. %@ will be replaced with the URL of the image. */
-"Successfully downloaded image %@" = "Successfully downloaded image %@";
-
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Sweden" = "Sweden";
-
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"Switzerland" = "Switzerland";
-
-/* Text on first tutorial screen which highlights the connection indicator */
-"The green checkmark indicates that Psiphon Browser is connected and ready for you to start browsing" = "The green checkmark indicates that Psiphon Browser is connected and ready for you to start browsing";
-
-/* Body text on one of the on-boarding screens. It is indicating to the user that Psiphon Browser allows them to access the Internet (without censorship). */
-"The Internet at your fingertips" = "The Internet at your fingertips";
+"START_TUTORIAL_BUTTON" = "Start Tutorial";
 
 /* InAppSettingsKit */
 "This device is not configured for sending Email. Please configure the Mail settings in the Settings app." = "This device is not configured for sending Email. Please configure the Mail settings in the Settings app.";
 
+/* Text on last tutorial screen which prompts the user to exit tutorial and start browsing with Psiphon Browser */
+"TUTORIAL_BODY_FINAL" = "Now we'll connect to a Psiphon server so you can start browsing.";
+
 /* Text on second tutorial screen which highlights the settings button */
-"This is where you can access settings and find help" = "This is where you can access settings and find help";
+"TUTORIAL_BODY_SETTINGS" = "This is where you can access settings and find help";
 
-/* No comment provided by engineer. */
-"Title Label" = "Title Label";
+/* Text on first tutorial screen which highlights the connection indicator */
+"TUTORIAL_BODY_STATUS" = "The green checkmark indicates that Psiphon Browser is connected and ready for you to start browsing";
 
-/* Alert text telling user which button to press if they want to be redirected to the settings menu */
-"To give permissions tap on 'Change Settings' button" = "To give permissions tap on 'Change Settings' button";
+/* Final button in tutorial which user clicks to exit tutorial and start browsing with Psiphon Browser */
+"TUTORIAL_GO_BUTTON" = "Let's Go!";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"United Kingdom" = "United Kingdom";
+/* Text that can be clicked to skip the tutorial */
+"TUTORIAL_SKIP_BUTTON" = "SKIP TUTORIAL";
 
-/* Name of a country/region where Psiphon servers are located. The user can choose to only use servers in that country. */
-"United States" = "United States";
+/* Title of third tutorial screen which prompts the user to exit tutorial and start browsing with Psiphon Browser */
+"TUTORIAL_TITLE_FINAL" = "Learning time is over";
 
-/* No comment provided by engineer. */
-"Unknown Organization" = "Unknown Organization";
+/* Title of second tutorial screen which highlights the settings button */
+"TUTORIAL_TITLE_SETTINGS" = "Settings & Help";
 
-/* 'Edit Bookmark' dialog URL field
-   Add bookmark URL field */
-"URL" = "URL";
+/* Title of first tutorial screen which highlights the connection indicator */
+"TUTORIAL_TITLE_STATUS" = "Status Indicator";
 
-/* HTTP authentication alert user name input title */
-"User Name" = "User Name";
-
-/* Field name for display in list */
-"Version" = "Version";
-
-/* Connection status initial splash modal dialog title for 'Waiting for network...' state */
-"Waiting for network..." = "Waiting for network...";
-
-/* Comments section placeholder text */
-"What's on your mind? Please leave us your feedback" = "What's on your mind? Please leave us your feedback";
-
-/* Text referring user to frequently asked questions. %@ is where the separate translation for the phrase 'Frequently Asked Questions' will be placed. */
-"You can find solutions to many common problems in our %@." = "You can find solutions to many common problems in our %@.";
-
-/* Title text on one of the on-boarding screens. The intention of this screen is to let the user know that their sites and services -- Facebook, Twitter, etc. -- can be accessed within Psiphon Browser via web pages. */
-"Your Apps in Your Browser" = "Your Apps in Your Browser";
-
-/* Body text on one of the on-boarding screens. The intention of this screen is to let the user know that their sites and services -- Facebook, Twitter, etc. -- can be accessed within Psiphon Browser via web pages. */
-"Your favorite apps have a web interface that works great in Psiphon Browser" = "Your favorite apps have a web interface that works great in Psiphon Browser";
-
-/* Introduction text at top of feedback form */
-"Your feedback makes Psiphon better!" = "Your feedback makes Psiphon better!";
-
-/* This string will end up as '<date> 'at' <time>'. For example 2016-03-01 at 19:00:00 EST. Only 'at' should be translated with apostrophes preserved and the date and time strings placed where appropriate. */
-"yyyy-MM-dd 'at' HH:mm:ss zzz" = "yyyy-MM-dd 'at' HH:mm:ss zzz";
+/* Alert dialog title when webpage has failed to load */
+"WEB_LOAD_ERROR_TEXT" = "Error";
 

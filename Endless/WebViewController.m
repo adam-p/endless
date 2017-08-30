@@ -275,7 +275,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	[self.view insertSubview:tabToolbar aboveSubview:navigationBar];
 
 	tabAddButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewTabFromToolbar:)];
-	tabDoneButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Done button title, dismisses the tab chooser") style:UIBarButtonItemStyleDone target:self action:@selector(doneWithTabsButton:)];
+	tabDoneButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"DONE_ACTION", nil, [NSBundle mainBundle], @"Done", @"Done action") style:UIBarButtonItemStyleDone target:self action:@selector(doneWithTabsButton:)];
 
 	tabToolbar.items = [NSArray arrayWithObjects:
 						[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil],
@@ -472,7 +472,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 		PsiphonConnectionSplashViewController *connectionSplashViewController = [[PsiphonConnectionSplashViewController alloc]
 																				 initWithState:[[AppDelegate sharedAppDelegate] psiphonConectionState]];
 		connectionSplashViewController.delegate = self;
-		[connectionSplashViewController addAction:[NYAlertAction actionWithTitle:NSLocalizedString(@"Go to Settings", nil)
+		[connectionSplashViewController addAction:[NYAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"CONNECTING_GO_TO_SETTINGS", nil, [NSBundle mainBundle], @"Go to Settings", @"Action button in connection dialog that will open the app settings")
 																		   style:UIAlertActionStyleDefault
 																		 handler:^(NYAlertAction *action) {
 																			 [weakSelf openSettingsMenu:nil];
@@ -1021,12 +1021,12 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 
 		if ([self curWebViewTab].fileDownloadState == WebViewTabFileDownloadStateDownloadCancelled) {
 			[refreshButton setImage:[UIImage imageNamed:@"refresh"] forState:UIControlStateNormal];
-			urlField.text = NSLocalizedString(@"Cancelled", @"Text displayed on navigation bar reflecting file download state");
+			urlField.text = NSLocalizedStringWithDefaultValue(@"DOWNLOAD_STATE_CANCELLED", nil, [NSBundle mainBundle], @"Cancelled", @"Text displayed on navigation bar reflecting file download state");
 			urlField.textAlignment = NSTextAlignmentCenter;
 			urlField.rightView = refreshButton;
 		} else if ([self curWebViewTab].fileDownloadState == WebViewTabFileDownloadStateDownloadFailed) {
 			[refreshButton setImage:[UIImage imageNamed:@"refresh"] forState:UIControlStateNormal];
-			urlField.text = NSLocalizedString(@"Error", @"Text displayed on navigation bar reflecting file download state");
+			urlField.text = NSLocalizedStringWithDefaultValue(@"DOWNLOAD_STATE_ERROR", nil, [NSBundle mainBundle], @"Error", @"Text displayed on navigation bar reflecting file download state");
 			urlField.textAlignment = NSTextAlignmentCenter;
 			urlField.rightView = refreshButton;
 		} else {
@@ -1051,7 +1051,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 					[urlField setTextColor:[UIColor colorWithRed:0 green:(183.0/255.0) blue:(82.0/255.0) alpha:1.0]];
 
 					if ([self.curWebViewTab.SSLCertificate evOrgName] == nil)
-						[urlField setText:NSLocalizedString(@"Unknown Organization", nil)];
+						[urlField setText:NSLocalizedStringWithDefaultValue(@"CERT_UNKNOWN_ORGANIZATION", nil, [NSBundle mainBundle], @"Unknown Organization", nil)];
 					else
 						[urlField setText:self.curWebViewTab.SSLCertificate.evOrgName];
 
@@ -1219,7 +1219,7 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	if (bookmarksCancelButton == nil) {
 		// Setup cancel button which dimisses embedded bookmarks view
 		bookmarksCancelButton = [[UIButton alloc] init];
-		[bookmarksCancelButton setTitle:NSLocalizedString(@"Cancel", @"Cancel button text which allows user to exit bookmarks view") forState:UIControlStateNormal];
+		[bookmarksCancelButton setTitle:NSLocalizedStringWithDefaultValue(@"CANCEL_ACTION", nil, [NSBundle mainBundle], @"Cancel", @"Cancel action") forState:UIControlStateNormal];
 		[bookmarksCancelButton.titleLabel setFont:[UIFont systemFontOfSize:20.0f]];
 		[bookmarksCancelButton.titleLabel setAdjustsFontSizeToFitWidth:YES];
 		[bookmarksCancelButton setTitleColor:[progressBar tintColor] forState:UIControlStateNormal];
@@ -1944,13 +1944,13 @@ static BOOL (^safeStringsEqual)(NSString *, NSString *) = ^BOOL(NSString *a, NSS
 	__weak  WebViewController *weakSelf = self;
 	__weak  PsiphonConnectionAlertViewController *weakConnectionAlertViewController = connectionAlertViewController;
 
-	[connectionAlertViewController addAction:[NYAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil)
+	[connectionAlertViewController addAction:[NYAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"CONNECTION_ALERT_SETTINGS_ACTION", nil, [NSBundle mainBundle], @"Settings", @"Button text on connection status modal that brings the user to the app Settings")
 																	  style:UIAlertActionStyleDefault
 																	handler:^(NYAlertAction *action) {
 																		[weakSelf openSettingsMenu:nil];
 																	}]];
 
-	[connectionAlertViewController addAction:[NYAlertAction actionWithTitle:NSLocalizedString(@"Done", nil)
+	[connectionAlertViewController addAction:[NYAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"DONE_ACTION", nil, [NSBundle mainBundle], @"Done", @"Done action")
 																	  style:UIAlertActionStyleDefault
 																	handler:^(NYAlertAction *action) {
 																		[weakConnectionAlertViewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];

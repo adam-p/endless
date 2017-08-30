@@ -99,7 +99,7 @@ BOOL linksEnabled;
 
 		if (ruleCount > 0) {
 			cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
-			cell.detailTextLabel.text = [NSString stringWithFormat:(ruleCount == 1 ? NSLocalizedString(@"%ld rule in use", @"%ld will be replaced with the number 1") : NSLocalizedString(@"%ld rules in use", @"%ld will be replaced with a natural number")), ruleCount];
+			cell.detailTextLabel.text = [NSString stringWithFormat:(ruleCount == 1 ? NSLocalizedStringWithDefaultValue(@"RULES_IN_USE_SINGULAR", nil, [NSBundle mainBundle], @"%ld rule in use", @"%ld will be replaced with the number 1") : NSLocalizedStringWithDefaultValue(@"RULES_IN_USE_PLURAL", nil, [NSBundle mainBundle], @"%ld rules in use", @"%ld will be replaced with a natural number")), ruleCount];
 			cell.detailTextLabel.textColor = [UIColor colorWithRed:0 green:0.5 blue:0 alpha:1];
 		}
 	} else if ([specifier.key isEqualToString:kUpstreamProxyPort]
@@ -214,7 +214,7 @@ BOOL linksEnabled;
 		[self loadUrlForSpecifier:specifier.key];
 	} else if ([specifier.key isEqualToString:kLogsSpecifierKey]) {
 		LogViewController *vc = [[LogViewController alloc] init];
-		vc.title = NSLocalizedString(@"Logs", @"Title screen displaying logs");
+		vc.title = NSLocalizedStringWithDefaultValue(@"SETTINGS_LOGS_TITLE", nil, [NSBundle mainBundle], @"Logs", @"Title screen displaying logs");
 		[self.navigationController pushViewController:vc animated:YES];
 	} else if ([specifier.key isEqualToString:kRegionSelectionSpecifierKey]) {
 		RegionSelectionViewController *targetViewController = [[RegionSelectionViewController alloc] init];
@@ -228,10 +228,10 @@ BOOL linksEnabled;
 - (void)settingsViewController:(IASKAppSettingsViewController*)sender buttonTappedForSpecifier:(IASKSpecifier*)specifier {
 	if ([specifier.key isEqualToString:kClearWebsiteData]) {
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
-														message:NSLocalizedString(@"Remove all cookies and browsing data?", @"Title of alert to clear local cookies and browsing data")
+														message:NSLocalizedStringWithDefaultValue(@"SETTINGS_CLEAR_ALL_COOKIES_PROMPT", nil, [NSBundle mainBundle], @"Remove all cookies and browsing data?", @"Title of alert to clear local cookies and browsing data")
 													   delegate:self
-											  cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel button on alert")
-											  otherButtonTitles:NSLocalizedString(@"Clear Cookies and Data", @"Accept button on alert which triggers clearing all local cookies and browsing data"), nil];
+											  cancelButtonTitle:NSLocalizedStringWithDefaultValue(@"CANCEL_ACTION", nil, [NSBundle mainBundle], @"Cancel", @"Cancel action")
+											  otherButtonTitles:NSLocalizedStringWithDefaultValue(@"SETTINGS_CLEAR_ALL_COOKIES_PROMPT_BUTTON", nil, [NSBundle mainBundle], @"Clear Cookies and Data", @"Accept button on alert which triggers clearing all local cookies and browsing data"), nil];
 
 		[alert show];
 	} else if ([specifier.key isEqualToString:kForceReconnect]) {
@@ -254,13 +254,13 @@ BOOL linksEnabled;
 {
 	NSString *url;
 	if ([key isEqualToString:kAboutSpecifierKey]) { // make this a hashmap
-		url = NSLocalizedString(@"https://psiphon.ca/en/about.html", @"External link to the about page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/about.html for french.");
+		url = NSLocalizedStringWithDefaultValue(@"ABOUT_PAGE_URL", nil, [NSBundle mainBundle], @"https://psiphon.ca/en/about.html", @"External link to the about page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/about.html for french.");
 	} else if ([key isEqualToString:kFAQSpecifierKey]) {
-		url = NSLocalizedString(@"https://psiphon.ca/en/faq.html", @"External link to the FAQ page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/faq.html for french.");
+		url = NSLocalizedStringWithDefaultValue(@"FAQ_URL", nil, [NSBundle mainBundle], @"https://psiphon.ca/en/faq.html", @"External link to the FAQ page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/faq.html for french.");
 	} else if ([key isEqualToString:kPrivacyPolicySpecifierKey]) {
-		url = NSLocalizedString(@"https://psiphon.ca/en/privacy.html", @"External link to the privacy policy page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/privacy.html for french.");
+		url = NSLocalizedStringWithDefaultValue(@"PRIVACY_POLICY_URL", nil, [NSBundle mainBundle], @"https://psiphon.ca/en/privacy.html", @"External link to the privacy policy page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/privacy.html for french.");
 	} else if ([key isEqualToString:kTermsOfUseSpecifierKey]) {
-		url = NSLocalizedString(@"https://psiphon.ca/en/license.html", @"External link to the license page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/license.html for french.");
+		url = NSLocalizedStringWithDefaultValue(@"LICENSE_PAGE_URL", nil, [NSBundle mainBundle], @"https://psiphon.ca/en/license.html", @"External link to the license page. Please update this with the correct language specific link (if available) e.g. https://psiphon.ca/fr/license.html for french.");
 	}
 
 	[[AppDelegate sharedAppDelegate].webViewController addNewTabForURL:[NSURL URLWithString: url]];
