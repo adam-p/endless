@@ -8,7 +8,7 @@ en:
 
   # The description of the App, as it appears in the App Store. Note that the "bullets" must be the character -- • -- and not an HTML entity like &bull;.
   description: |
-    After helping tens of millions of users get access to the sites they love, Psiphon has launched its first official app for iOS!  Our new browser app seamlessly integrates access to the Psiphon network, securely connecting you to your sites.
+    After helping tens of millions of users get access to the websites they love, Psiphon has launched its first official app for iOS!  Our new browser app seamlessly integrates access to the Psiphon network, securely connecting you to your websites.
 
     No matter where you are in the world, the Psiphon Browser app will connect you to your destination websites. The app also provides you with an extra layer of protection when using public Wi-Fi services or other networks that could be untrustworthy.
 
